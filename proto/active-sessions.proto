@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package nucleus.provisioning;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// Active Sessions service for retrieving current RADIUS sessions
+service ActiveSessionsService {
+  // Get active sessions with pagination and filtering options
+  rpc GetActiveSessions (GetActiveSessionsRequest) returns (GetActiveSessionsResponse);
+}
+
+// Request for getting active sessions
+message GetActiveSessionsRequest {
+  // Authentication context
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Optional search term to filter by username, calling station ID, or framed IP
+  optional string search = 4;
+  
+  // Optional list of NAS device IPs to filter by
+  repeated string nas_devices = 5;
+}
+
+// Response containing active sessions and pagination metadata
+message GetActiveSessionsResponse {
+  // List of active sessions
+  repeated ActiveSession data = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}
+
+// Active session information
+message ActiveSession {
+  // Unique session identifier
+  string id = 1;
+  
+  // Username associated with the session
+  optional string username = 2;
+  
+  // NAS IP address
+  string nasipaddress = 3;
+  
+  // Session start time
+  google.protobuf.Timestamp acctstarttime = 4;
+  
+  // Session duration in seconds
+  int64 acctsessiontime = 5;
+  
+  // Total bytes downloaded
+  int64 acctinputoctets = 6;
+  
+  // Total bytes uploaded
+  int64 acctoutputoctets = 7;
+  
+  // Client IP address
+  optional string framedipaddress = 8;
+  
+  // Client MAC address
+  optional string callingstationid = 9;
+  
+  // Session status type
+  string acctstatustype = 10;
+}
+
+

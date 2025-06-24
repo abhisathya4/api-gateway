@@ -1,0 +1,151 @@
+// plan.proto
+syntax = "proto3";
+
+package plan;
+
+import "common.proto";
+import "radius.proto";
+import "planbook.proto";
+
+// Plan service for managing internet service plans
+service PlanService {
+  // Create a new internet service plan
+  rpc CreatePlan(CreatePlanRequest) returns (CreatePlanResponse);
+  
+  // Update an existing internet service plan
+  rpc UpdatePlan(UpdatePlanRequest) returns (UpdatePlanResponse);
+  
+  // Get a specific internet service plan by ID
+  rpc GetPlan(GetPlanRequest) returns (GetPlanResponse);
+  
+  // Get all internet service plans
+  rpc GetPlans(GetPlansRequest) returns (GetPlansResponse);
+}
+
+// Request to create a new internet service plan
+message CreatePlanRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Plan parameters
+  message PlanParams {
+    string name = 1;
+    int32 up_speed = 2;
+    int32 down_speed = 3;
+    string up_speed_unit = 4;
+    string down_speed_unit = 5;
+    bool is_post_fup = 6;
+    optional string data_limit = 7;
+    string type = 8;
+  }
+  
+  PlanParams plan_params = 2;
+}
+
+// selectPlanSchema:
+// id
+// name
+// upSpeed
+// downSpeed
+// type
+// upSpeedUnit
+// downSpeedUnit
+// isPostFUP
+// dataLimit
+// tenantId
+message Plan {
+  string id = 1;
+  string name = 2;
+  int32 up_speed = 3;
+  int32 down_speed = 4;
+  string type = 5;
+  string up_speed_unit = 6;
+  string down_speed_unit = 7;
+  bool is_post_fup = 8;
+  optional string data_limit = 9;
+  string tenant_id = 10;
+}
+
+message PlanWithCounts {
+  string id = 1;
+  string name = 2;
+  int32 up_speed = 3;
+  int32 down_speed = 4;
+  string type = 5;
+  string up_speed_unit = 6;
+  string down_speed_unit = 7;
+  bool is_post_fup = 8;
+  optional string data_limit = 9;
+  string tenant_id = 10;
+  int32 planbook_count = 11;
+  int32 customer_count = 12;
+}
+
+// Response from creating a new internet service plan
+message CreatePlanResponse {
+  repeated Plan plans = 1;
+}
+
+// Request to update an existing internet service plan
+message UpdatePlanRequest {
+  common.AuthContext auth_context = 1;
+  string plan_id = 2;
+  
+  // Plan parameters to update
+  message PlanParams {
+    optional string name = 1;
+    optional int32 up_speed = 2;
+    optional int32 down_speed = 3;
+    optional string up_speed_unit = 4;
+    optional string down_speed_unit = 5;
+    optional bool is_post_fup = 6;
+    optional string data_limit = 7;
+    optional string type = 8;
+  }
+  
+  PlanParams plan_params = 3;
+}
+
+// Response from updating an internet service plan
+message UpdatePlanResponse {
+  repeated Plan updated_plan = 1;
+  repeated planbook.Planbook updated_planbook = 2;
+  repeated radius.Radgroupreply updated_radgroupreply = 3;
+  repeated radius.Radusergroup updated_radusergroup = 4;
+}
+
+// Request to get a specific internet service plan
+message GetPlanRequest {
+  common.AuthContext auth_context = 1;
+  string plan_id = 2;
+}
+
+// Response with plan details
+message GetPlanResponse {
+  repeated Plan plans = 1;
+}
+
+// Request to get all internet service plans
+message GetPlansRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Search term to filter plans by name
+  string search = 4;
+  
+  // Filter plans by type (Commercial, Enterprise)
+  repeated string types = 5;
+}
+
+// Response with all plans
+message GetPlansResponse {
+  // List of plans
+  repeated PlanWithCounts plans = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}

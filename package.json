@@ -1,0 +1,27 @@
+{
+  "name": "my-app",
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "bun --watch src/index.ts",
+    "generate-proto": "bun scripts/generate-proto.ts"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.7.15",
+    "@hono/zod-validator": "^0.7.0",
+    "@scalar/hono-api-reference": "^0.5.184",
+    "google-protobuf": "^3.21.4",
+    "grpc-tools": "^1.13.0",
+    "hono": "^4.8.2",
+    "hono-openapi": "^0.4.8",
+    "protobufjs": "^7.5.3",
+    "zod": "^3.25.67",
+    "zod-openapi": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "ts-proto": "^2.7.5",
+    "typescript": "^5.8.3"
+  }
+}

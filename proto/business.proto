@@ -1,0 +1,121 @@
+// business.proto
+syntax = "proto3";
+
+package business;
+
+import "common.proto";
+import "radius.proto";
+import "planbook.proto";
+
+// Business service for managing business entities
+service BusinessService {
+  // Create a new business
+  rpc CreateBusiness(CreateBusinessRequest) returns (CreateBusinessResponse);
+  
+  // Update an existing business
+  rpc UpdateBusiness(UpdateBusinessRequest) returns (UpdateBusinessResponse);
+  
+  // Get a specific business by ID
+  rpc GetBusiness(GetBusinessRequest) returns (GetBusinessResponse);
+  
+  // Get all businesses
+  rpc GetBusinesses(GetBusinessesRequest) returns (GetBusinessesResponse);
+}
+
+// Request to create a new business
+message CreateBusinessRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Business parameters
+  message BusinessParams {
+    string name = 1;
+    string type = 2;
+    string billing_type = 3;
+    string tenant_id = 4;
+  }
+  
+  BusinessParams business_params = 2;
+}
+
+// selectBusinessSchema:
+// id
+// name
+// type
+// billingType
+// tenantId
+message Business {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string billing_type = 4;
+  string tenant_id = 5;
+}
+
+message BusinessWithCounts {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string billing_type = 4;
+  int32 customer_count = 5;
+  int32 planbook_count = 6;
+  string tenant_id = 7;
+}
+
+// Response from creating a new business
+message CreateBusinessResponse {
+  repeated Business businesses = 1;
+}
+
+// Request to update an existing business
+message UpdateBusinessRequest {
+  common.AuthContext auth_context = 1;
+  string business_id = 2;
+  
+  // Business parameters to update
+  message BusinessParams {
+    optional string name = 1;
+    optional string type = 2;
+    optional string billing_type = 3;
+  }
+  
+  BusinessParams business_params = 3;
+}
+
+// Response from updating a business
+message UpdateBusinessResponse {
+  repeated Business updated_business = 1;
+  repeated planbook.Planbook updated_planbook = 2;
+  repeated radius.Radgroupreply updated_radgroupreply = 3;
+  repeated radius.Radusergroup updated_radusergroup = 4;
+}
+
+// Request to get a specific business
+message GetBusinessRequest {
+  common.AuthContext auth_context = 1;
+  string business_id = 2;
+}
+
+// Response with business details
+message GetBusinessResponse {
+  repeated Business businesses = 1;
+}
+
+// Request to get all businesses
+message GetBusinessesRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+}
+
+// Response with all businesses
+message GetBusinessesResponse {
+  // List of businesses
+  repeated BusinessWithCounts businesses = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}

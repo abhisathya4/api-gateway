@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+
+    // Path aliases for cleaner imports
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@rpc/*": ["src/grpc/*"],
+      "@routes/*": ["src/routes/*"],
+      "@config/*": ["src/config/*"],
+    }
+  }
+}

@@ -1,0 +1,198 @@
+// customers.proto
+syntax = "proto3";
+
+package customers;
+
+import "common.proto";
+import "radius.proto";
+import "google/protobuf/timestamp.proto";
+
+
+// Customer service for managing internet customers
+service CustomerService {
+  // Create a new customer with associated RADIUS user
+  rpc CreateCustomer(CreateCustomerRequest) returns (CreateCustomerResponse);
+  
+  // Update a customer's basic information
+  rpc UpdateCustomerDetails(UpdateCustomerDetailsRequest) returns (UpdateCustomerDetailsResponse);
+  
+  // Update a customer's subscription or post-FUP plan
+  rpc UpdateCustomerPlan(UpdateCustomerPlanRequest) returns (UpdateCustomerPlanResponse);
+  
+  // Get a specific customer by ID
+  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+  
+  // Get all customers with pagination and filtering options
+  rpc GetCustomers(GetCustomersRequest) returns (GetCustomersResponse);
+  
+  // Restore a customer's plan after FUP enforcement
+  rpc RestoreCustomerPlan(RestoreCustomerPlanRequest) returns (RestoreCustomerPlanResponse);
+}
+
+// Request to create a new customer
+message CreateCustomerRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Customer parameters
+  message CustomerParams {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string username = 4;
+    string subscription_plan = 5;
+    optional string post_fup_plan = 6;
+    string rad_password = 7;
+    }
+  
+  CustomerParams customer_params = 2;
+}
+
+// selectCustomerSchema:
+// id
+// name
+// username
+// email
+// subscriptionPlan
+// postFUPPlan
+// active
+// lastRenewDate
+// createdAt
+// tenantId
+message Customer {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  optional string subscription_plan = 5;
+  optional string post_fup_plan = 6;
+  string created_at = 7;
+  bool active = 8;
+  optional string last_renew_date = 9;
+  int64 data_usage = 10;
+  google.protobuf.Timestamp last_active = 11;
+  string tenant_id = 12;
+}
+
+// Request for getting customers with filtering and pagination
+message GetCustomersRequest {
+  // Authentication context
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Optional search term to filter by name, username, or email
+  optional string search = 4;
+  
+  // Optional list of plan IDs to filter by
+  repeated string plan_ids = 5;
+  
+  // Optional list of business IDs to filter by
+  repeated string business_ids = 6;
+  
+  // Optional status filter (active/inactive)
+  repeated bool status = 7;
+}
+
+// Response containing customers and pagination metadata
+message GetCustomersResponse {
+  // List of customers with extended information
+  repeated CustomerWithPlanInfo data = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}
+
+// Extended customer information including plan and business details
+message CustomerWithPlanInfo {
+  // Base customer fields
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  optional string subscription_plan = 5;
+  optional string post_fup_plan = 6;
+  string created_at = 7;
+  bool active = 8;
+  optional string last_renew_date = 9;
+  int64 data_usage = 10;
+  int64 data_limit = 11;
+  google.protobuf.Timestamp last_active = 12;
+  string tenant_id = 13;
+  
+  // Extended fields from joins
+  string plan_name = 14;
+  string business_name = 15;
+}
+
+// Response from creating a new customer
+message CreateCustomerResponse {
+  repeated Customer created_customer = 1;
+  repeated radius.RadCheck created_radius_user = 2;
+  repeated radius.Radusergroup plan_rad_groups = 3;
+}
+
+// Request to update a customer's basic information
+message UpdateCustomerDetailsRequest {
+  common.AuthContext auth_context = 1;
+  string customer_id = 2;
+  
+  // Customer details to update
+  message CustomerParams {
+    optional string name = 1;
+    optional string email = 2;
+  }
+  
+  CustomerParams customer_params = 3;
+}
+
+// Response from updating customer details
+message UpdateCustomerDetailsResponse {
+  repeated Customer customers = 1;
+}
+
+// Request to update a customer's plan
+message UpdateCustomerPlanRequest {
+  common.AuthContext auth_context = 1;
+  string customer_id = 2;
+  
+  // Plan parameters to update
+  message CustomerParams {
+    optional string subscription_plan = 1;
+    optional string post_fup_plan = 2;
+  }
+  
+  CustomerParams customer_params = 3;
+}
+
+// Response from updating customer plan
+message UpdateCustomerPlanResponse {
+  repeated Customer updated_customer = 1;
+  repeated radius.Radusergroup updated_radusergroup = 2;
+}
+
+// Request to get a specific customer
+message GetCustomerRequest {
+  common.AuthContext auth_context = 1;
+  string customer_id = 2;
+}
+
+// Response with customer details
+message GetCustomerResponse {
+  repeated Customer customers = 1;
+}
+
+// Request to restore a customer's plan after FUP enforcement
+message RestoreCustomerPlanRequest {
+  common.AuthContext auth_context = 1;
+  string customer_id = 2;
+}
+
+// Response from restoring customer plan
+message RestoreCustomerPlanResponse {
+  repeated Customer restored_customer = 1;
+  repeated radius.Radusergroup restored_radusergroups = 2;
+}

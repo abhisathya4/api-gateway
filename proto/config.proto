@@ -1,0 +1,53 @@
+// config.proto
+syntax = "proto3";
+
+package config;
+
+import "common.proto";
+
+// Config service for managing organization configurations
+service ConfigService {
+  // Get organization config with authentication
+  rpc GetOrganizationConfig(GetOrganizationConfigRequest) returns (GetOrganizationConfigResponse);
+  
+  // Update organization config with authentication
+  rpc UpdateOrganizationConfig(UpdateOrganizationConfigRequest) returns (UpdateOrganizationConfigResponse);
+}
+
+// Request to get organization config
+message GetOrganizationConfigRequest {
+  common.AuthContext auth_context = 1;
+}
+
+// selectConfigSchema:
+// id
+// organizationId
+// defaultPostFUPId
+message Config {
+  string id = 1;
+  string organization_id = 2;
+  optional string default_post_fup_id = 3;
+}
+
+// Response with organization config
+message GetOrganizationConfigResponse {
+  Config config = 1;
+}
+
+// Request to update organization config
+message UpdateOrganizationConfigRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Config parameters to update
+  message ConfigParams {
+    string organization_id = 1;
+    optional string default_post_fup_id = 2;
+  }
+  
+  ConfigParams config_params = 2;
+}
+
+// Response from updating organization config
+message UpdateOrganizationConfigResponse {
+  repeated Config config = 1;
+}

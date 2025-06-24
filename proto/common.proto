@@ -1,0 +1,35 @@
+// common.proto
+syntax = "proto3";
+
+package common;
+
+// Common message types that might be used across services
+
+message Empty {}
+
+// Auth context that can be used for passing authentication information
+message AuthContext {
+  string token = 1;    // The authentication token (typically JWT from Auth0)
+  string tenant_id = 2; // The tenant/organization ID
+}
+
+// Pagination metadata for paginated responses
+message PaginationMeta {
+  // Total number of items available
+  int32 total = 1;
+  
+  // Current page limit
+  int32 limit = 2;
+  
+  // Current page offset
+  int32 offset = 3;
+}
+
+// Common pagination request fields
+message PaginationRequest {
+  // Pagination limit (max number of items to return)
+  int32 limit = 1;
+  
+  // Pagination offset (starting position)
+  int32 offset = 2;
+}

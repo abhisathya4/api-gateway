@@ -1,0 +1,89 @@
+// nas.proto
+syntax = "proto3";
+
+package nas;
+
+import "common.proto";
+
+// NAS service for managing Network Access Server devices
+service NasService {
+  // Register a new NAS device with authentication
+  rpc RegisterNasDevice(RegisterNasDeviceRequest) returns (RegisterNasDeviceResponse);
+  
+  // Register a new NAS device at the system level
+  rpc SysRegisterNasDevice(SysRegisterNasDeviceRequest) returns (RegisterNasDeviceResponse);
+}
+
+// Request to register a new NAS device with authentication
+message RegisterNasDeviceRequest {
+  common.AuthContext auth_context = 1;
+  
+  // NAS device parameters
+  message DeviceParams {
+    string nasname = 1;
+    string shortname = 2;
+    string type = 3;
+    optional int32 ports = 4;
+    string secret = 5;
+    optional string server = 6;
+    optional string community = 7;
+    optional string description = 8;
+    optional string require_ma = 9;
+    optional string limit_proxy_state = 10;
+  }
+  
+  DeviceParams device_params = 2;
+}
+
+// Request to register a new NAS device at the system level
+message SysRegisterNasDeviceRequest {
+  // NAS device parameters
+  message DeviceParams {
+    string nasname = 1;
+    string shortname = 2;
+    string type = 3;
+    optional int32 ports = 4;
+    string secret = 5;
+    optional string server = 6;
+    optional string community = 7;
+    optional string description = 8;
+    optional string require_ma = 9;
+    optional string limit_proxy_state = 10;
+    string organization_id = 11;
+  }
+  
+  DeviceParams device_params = 1;
+}
+
+// selectNasSchema:
+// id
+// nasname
+// shortname
+// type
+// ports
+// secret
+// server
+// community
+// description
+// requireMa
+// limitProxyState
+// tenantId
+message Nas {
+  string id = 1;
+  string nasname = 2;
+  string shortname = 3;
+  string type = 4;
+  optional int32 ports = 5;
+  string secret = 6;
+  optional string server = 7;
+  optional string community = 8;
+  optional string description = 9;
+  string require_ma = 10;
+  string limit_proxy_state = 11;
+  string tenant_id = 12;
+}
+
+// Response from registering a NAS device
+message RegisterNasDeviceResponse {
+  repeated Nas nas_devices = 1;
+}

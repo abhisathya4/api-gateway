@@ -1,0 +1,72 @@
+// organization.proto
+syntax = "proto3";
+
+package organization;
+
+import "common.proto";
+import "business.proto";
+import "config.proto";
+
+// Organization service for managing organizations
+service OrganizationService {
+  // Create a new organization at the system level
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse);
+  
+  // Get organization details with authentication
+  rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse);
+  
+  // Update organization details with authentication
+  rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse);
+}
+
+// Request to create a new organization at the system level
+message CreateOrganizationRequest {
+  Organization org_params = 1;
+}
+
+// selectOrganizationSchema:
+// id
+// securityLevel
+// name
+// authId
+message Organization {
+  string id = 1;
+  string name = 2;
+  string auth_id = 3;
+  string security_level = 4;
+}
+
+// Response from creating a new organization
+message CreateOrganizationResponse {
+  Organization org = 1;
+  repeated business.Business business = 2;
+  repeated config.Config config = 3;
+}
+
+// Request to get organization details
+message GetOrganizationRequest {
+  common.AuthContext auth_context = 1;
+}
+
+// Response with organization details
+message GetOrganizationResponse {
+  Organization organization = 1;
+}
+
+// Request to update organization details
+message UpdateOrganizationRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Organization parameters to update
+  message OrganizationParams {
+    string name = 1;
+  }
+  
+  OrganizationParams org_params = 2;
+}
+
+// Response from updating organization
+message UpdateOrganizationResponse {
+  Organization updated_org = 1;
+  repeated business.Business updated_business = 2;
+}

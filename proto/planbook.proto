@@ -1,0 +1,142 @@
+// planbook.proto
+syntax = "proto3";
+
+package planbook;
+
+import "common.proto";
+import "radius.proto";
+
+// selectPlanbookSchema:
+// id
+// planId
+// businessId
+// period
+// price
+// groupname
+// tenantId
+message Planbook {
+  string id = 1;
+  string plan_id = 2;
+  string business_id = 3;
+  string period = 4;
+  string price = 5;
+  string groupname = 6;
+  string tenant_id = 7;
+}
+
+message PlanbookDetails {
+  string id = 1;
+  string plan_id = 2;
+  string plan_name = 3;
+  string plan_type = 4;
+  string plan_upspeed = 5;
+  string plan_downspeed = 6;
+  string plan_upspeed_unit = 7;
+  string plan_downspeed_unit = 8;
+  string business_id = 9;
+  string business_name = 10;
+  string period = 11;
+  string price = 12;
+  string groupname = 13;
+  string tenant_id = 14;
+}
+
+// Planbook service for managing planbook entries
+service PlanbookService {
+  // Create a new planbook entry
+  rpc CreatePlanbook(CreatePlanbookRequest) returns (CreatePlanbookResponse);
+  
+  // Update a planbook entry's pricing information
+  rpc UpdatePlanbook(UpdatePlanbookRequest) returns (UpdatePlanbookResponse);
+  
+  // Get a specific planbook entry by ID
+  rpc GetPlanbook(GetPlanbookRequest) returns (GetPlanbookResponse);
+  
+  // Get all planbook entries
+  rpc GetPlanbooks(GetPlanbooksRequest) returns (GetPlanbooksResponse);
+}
+
+// Request to create a new planbook entry
+message CreatePlanbookRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Planbook parameters
+  message PlanbookParams {
+    string plan_id = 1;
+    optional string business_id = 2;
+    optional double price = 3;
+    optional string period = 4;
+  }
+  
+  PlanbookParams planbook_params = 2;
+}
+
+
+// Response from creating a new planbook entry
+message CreatePlanbookResponse {
+  repeated Planbook planbooks = 1;
+  repeated radius.Radgroupreply radgroupreply_entry = 2;
+}
+
+// Request to update a planbook entry
+message UpdatePlanbookRequest {
+  common.AuthContext auth_context = 1;
+  string planbook_id = 2;
+  
+  // Planbook parameters to update
+  message PlanbookParams {
+    optional double price = 1;
+    optional string period = 2;
+  }
+  
+  PlanbookParams planbook_params = 3;
+}
+
+// Response from updating a planbook entry
+message UpdatePlanbookResponse {
+  repeated Planbook planbooks = 1;
+}
+
+// Request to get a specific planbook entry
+message GetPlanbookRequest {
+  common.AuthContext auth_context = 1;
+  string planbook_id = 2;
+}
+
+// Response with planbook entry details
+message GetPlanbookResponse {
+  repeated Planbook planbooks = 1;
+}
+
+// Request to get all planbook entries
+message GetPlanbooksRequest {
+  // Authentication context
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Optional search term to filter by plan name, business name, or price
+  optional string search = 4;
+  
+  // Optional list of plan types to filter by (Commercial, Enterprise)
+  repeated string plan_types = 5;
+  
+  // Optional list of business IDs to filter by
+  repeated string business_ids = 6;
+  
+  // Optional list of plan IDs to filter by
+  repeated string plan_ids = 7;
+}
+
+// Response with all planbook entries
+message GetPlanbooksResponse {
+  // List of planbook entries
+  repeated PlanbookDetails planbooks = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}

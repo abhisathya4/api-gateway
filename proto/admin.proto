@@ -1,0 +1,113 @@
+// admin.proto
+syntax = "proto3";
+
+package admin;
+
+import "common.proto";
+
+// Admin service for managing organization administrators
+service AdminService {
+  // Create a new admin
+  rpc CreateAdmin(CreateAdminRequest) returns (CreateAdminResponse);
+  
+  // Get a specific admin by ID, email, or auth_id
+  rpc GetAdmin(GetAdminRequest) returns (GetAdminResponse);
+  
+  // Get all admins for the organization
+  rpc GetAllAdmins(GetAllAdminsRequest) returns (GetAllAdminsResponse);
+  
+  // Update an admin's information
+  rpc UpdateAdmin(UpdateAdminRequest) returns (UpdateAdminResponse);
+  
+  // Delete an admin
+  rpc DeleteAdmin(DeleteAdminRequest) returns (DeleteAdminResponse);
+}
+
+// Request to create a new admin at the system level
+message CreateAdminRequest {
+  // Admin parameters
+  message AdminParams {
+    string id = 1;
+    string organization_id = 2;
+    string email = 3;
+    string name = 4;
+    string auth_id = 5;
+  }
+  
+  AdminParams admin_params = 1;
+}
+
+// selectAdminSchema:
+// id
+// organizationId
+// email
+// name
+// authId
+// createdAt
+message Admin {
+  string id = 1;
+  string organization_id = 2;
+  string email = 3;
+  string name = 4;
+  string auth_id = 5;
+  string created_at = 6;
+}
+
+// Response from creating a new admin
+message CreateAdminResponse {
+  repeated Admin admins = 1;
+}
+
+// Request to get a specific admin
+message GetAdminRequest {
+  common.AuthContext auth_context = 1;
+  string filter = 2; // "id", "email", or "auth_id"
+  string value = 3;
+}
+
+// Response with admin details
+message GetAdminResponse {
+  Admin admin = 1;
+}
+
+// Request to get all admins
+message GetAllAdminsRequest {
+  common.AuthContext auth_context = 1;
+}
+
+// Response with all admins
+message GetAllAdminsResponse {
+  repeated Admin admins = 1;
+}
+
+// Request to update an admin
+message UpdateAdminRequest {
+  common.AuthContext auth_context = 1;
+  string admin_id = 2;
+  
+  // Admin parameters to update
+  message AdminParams {
+    optional string email = 1;
+    optional string name = 2;
+    optional string auth_id = 3;
+    optional string organization_id = 4;
+  }
+  
+  AdminParams admin_params = 3;
+}
+
+// Response from updating an admin
+message UpdateAdminResponse {
+  repeated Admin admins = 1;
+}
+
+// Request to delete an admin
+message DeleteAdminRequest {
+  common.AuthContext auth_context = 1;
+  string admin_id = 2;
+}
+
+// Response from deleting an admin
+message DeleteAdminResponse {
+  repeated Admin admins = 1;
+}

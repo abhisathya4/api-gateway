@@ -1,0 +1,588 @@
+// src/routes/provisioning/planbook.ts
+import { Hono } from "hono";
+import { describeRoute } from "hono-openapi";
+import { resolver, validator as zValidator } from "hono-openapi/zod";
+import { z } from "zod";
+import { extendZodWithOpenApi } from "zod-openapi";
+import { GrpcClient } from "../../grpc/grpc-client";
+import * as planbookPb from "../../grpc/generated/planbook_pb";
+import * as commonPb from "../../grpc/generated/common_pb";
+import {
+  createPlanbookRequestSchema,
+  createPlanbookResponseSchema,
+  getPlanbookRequestSchema,
+  getPlanbookResponseSchema,
+  getPlanbooksRequestSchema,
+  getPlanbooksResponseSchema,
+  planbookDetailsSchema,
+  updatePlanbookRequestSchema,
+  updatePlanbookResponseSchema,
+} from "../../lib/models/provisioning";
+import { errorSchema } from "../../lib/utils/routingUtils";
+import { Status } from "@grpc/grpc-js/build/src/constants";
+import { promisifyGrpcCall } from "../../lib/utils/grpcUtils";
+
+import "zod-openapi/extend";
+import authMiddleware from "@/lib/middleware/auth";
+
+export const planbookRoutes = new Hono()
+  .get(
+    "/",
+    describeRoute({
+      summary: "Get Planbooks",
+      description: "Get all planbook entries with filtering and pagination",
+      tags: ["Planbook"],
+      parameters: [
+        {
+          name: "limit",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 10 },
+          description: "Pagination limit",
+        },
+        {
+          name: "offset",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 0 },
+          description: "Pagination offset",
+        },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter planbooks",
+        },
+        {
+          name: "plan_types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by plan types",
+          style: "form",
+          explode: true,
+        },
+        {
+          name: "business_ids",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by business IDs",
+          style: "form",
+          explode: true,
+        },
+        {
+          name: "plan_ids",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by plan IDs",
+          style: "form",
+          explode: true,
+        },
+      ],
+      responses: {
+        200: {
+          description: "Planbook entries retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(getPlanbooksResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new planbookPb.GetPlanbooksRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set pagination parameters
+        const limit = parseInt(c.req.query("limit") || "10");
+        const offset = parseInt(c.req.query("offset") || "0");
+        grpcRequest.setLimit(limit);
+        grpcRequest.setOffset(offset);
+
+        // Set filter parameters
+        const search = c.req.query("search");
+        if (search) {
+          grpcRequest.setSearch(search);
+        }
+
+        const planTypes = c.req.queries("plan_types");
+        if (planTypes && planTypes.length > 0) {
+          grpcRequest.setPlanTypesList(planTypes);
+        }
+
+        const businessIds = c.req.queries("business_ids");
+        if (businessIds && businessIds.length > 0) {
+          grpcRequest.setBusinessIdsList(businessIds);
+        }
+
+        const planIds = c.req.queries("plan_ids");
+        if (planIds && planIds.length > 0) {
+          grpcRequest.setPlanIdsList(planIds);
+        }
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.GetPlanbooksResponse>(
+              (callback) => client.getPlanbooks(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const planbooks = response
+            .getPlanbooksList()
+            .map((p) => p.toObject());
+          const meta = response.getMeta()?.toObject();
+
+          const responseData: z.infer<typeof getPlanbooksResponseSchema> = {
+            data: planbooks.map((planbook) => ({
+              id: planbook.id,
+              plan_id: planbook.planId,
+              business_id: planbook.businessId,
+              business_name: planbook.businessName,
+              period: planbook.period,
+              price: planbook.price,
+              plan_name: planbook.planName,
+              plan_type: planbook.planType,
+              plan_upspeed: planbook.planUpspeed,
+              plan_downspeed: planbook.planDownspeed,
+              plan_upspeed_unit: planbook.planUpspeedUnit,
+              plan_downspeed_unit: planbook.planDownspeedUnit,
+              groupname: planbook.groupname,
+              tenant_id: planbook.tenantId,
+            })),
+            meta: meta
+              ? {
+                  total: meta.total,
+                  limit: meta.limit,
+                  offset: meta.offset,
+                }
+              : undefined,
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error getting planbook entries:", error);
+
+          // Map gRPC error codes to appropriate HTTP status codes
+          if (error.code === Status.INVALID_ARGUMENT) {
+            return c.json({ error: "Invalid request parameters" }, 400);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to get planbook entries" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in get planbooks route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .post(
+    "/create",
+    describeRoute({
+      summary: "Create Planbook",
+      description: "Create a new planbook entry",
+      tags: ["Planbook"],
+      requestBody: {
+        content: {
+          "application/json": {
+            schema: resolver(createPlanbookRequestSchema) as any,
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Planbook entry created successfully",
+          content: {
+            "application/json": {
+              schema: resolver(createPlanbookResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    zValidator("json", createPlanbookRequestSchema),
+    async (c) => {
+      try {
+        const requestData = await c.req.valid("json");
+        const token = c.var.token;
+        const tenant_id = c.var.tenant_id;
+
+        // Create gRPC request
+        const grpcRequest = new planbookPb.CreatePlanbookRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        authContext.setTenantId(tenant_id);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set planbook parameters
+        const planbookParams =
+          new planbookPb.CreatePlanbookRequest.PlanbookParams();
+        planbookParams.setPlanId(requestData.planbook_params.plan_id);
+
+        if (requestData.planbook_params.business_id) {
+          planbookParams.setBusinessId(requestData.planbook_params.business_id);
+        }
+        if (requestData.planbook_params.price !== undefined) {
+          planbookParams.setPrice(requestData.planbook_params.price);
+        }
+        if (requestData.planbook_params.period) {
+          planbookParams.setPeriod(requestData.planbook_params.period);
+        }
+
+        grpcRequest.setPlanbookParams(planbookParams);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.CreatePlanbookResponse>(
+              (callback) => client.createPlanbook(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const planbooks = response
+            .getPlanbooksList()
+            .map((p) => p.toObject());
+          const radgroupreplyEntries = response
+            .getRadgroupreplyEntryList()
+            .map((r) => r.toObject());
+
+          const responseData = {
+            planbooks: planbooks.map((planbook) => ({
+              id: planbook.id,
+              plan_id: planbook.planId,
+              business_id: planbook.businessId,
+              period: planbook.period,
+              price: planbook.price,
+              groupname: planbook.groupname,
+              tenant_id: planbook.tenantId,
+            })),
+            radgroupreply_entries: radgroupreplyEntries.map((entry) => ({
+              id: entry.id,
+              groupname: entry.groupname,
+              attribute: entry.attribute,
+              op: entry.op,
+              value: entry.value,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error creating planbook entry:", error);
+
+          // Map gRPC error codes to appropriate HTTP status codes
+          if (error.code === Status.INVALID_ARGUMENT) {
+            return c.json({ error: "Invalid request parameters" }, 400);
+          } else if (error.code === Status.ALREADY_EXISTS) {
+            return c.json({ error: "Planbook entry already exists" }, 409);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to create planbook entry" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in create planbook route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .get(
+    "/:planbook_id",
+    describeRoute({
+      summary: "Get Planbook",
+      description: "Get a specific planbook entry by ID",
+      tags: ["Planbook"],
+      parameters: [
+        {
+          name: "planbook_id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Planbook ID",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Planbook entries retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(getPlanbookResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const planbookId = c.req.param("planbook_id");
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new planbookPb.GetPlanbookRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set planbook ID
+        grpcRequest.setPlanbookId(planbookId);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.GetPlanbookResponse>(
+              (callback) => client.getPlanbook(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const planbooks = response
+            .getPlanbooksList()
+            .map((p) => p.toObject());
+
+          if (!planbooks || planbooks.length === 0) {
+            return c.json({ error: "Planbook entry not found" }, 404);
+          }
+
+          const responseData = {
+            planbooks: planbooks.map((planbook) => ({
+              id: planbook.id,
+              plan_id: planbook.planId,
+              business_id: planbook.businessId,
+              period: planbook.period,
+              price: planbook.price,
+              groupname: planbook.groupname,
+              tenant_id: planbook.tenantId,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error getting planbook entry:", error);
+
+          if (error.code === Status.NOT_FOUND) {
+            return c.json({ error: "Planbook entry not found" }, 404);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to get planbook entry" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in get planbook route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .put(
+    "/:planbook_id",
+    describeRoute({
+      summary: "Update Planbook",
+      description: "Update an existing planbook entry",
+      tags: ["Planbook"],
+      parameters: [
+        {
+          name: "planbook_id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Planbook ID",
+        },
+      ],
+      requestBody: {
+        content: {
+          "application/json": {
+            schema: resolver(updatePlanbookRequestSchema) as any,
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Planbook entry updated successfully",
+          content: {
+            "application/json": {
+              schema: resolver(updatePlanbookResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        404: {
+          description: "Planbook entry not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    zValidator("json", updatePlanbookRequestSchema),
+    async (c) => {
+      try {
+        const planbookId = c.req.param("planbook_id");
+        const requestData = c.req.valid("json");
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new planbookPb.UpdatePlanbookRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set planbook ID
+        grpcRequest.setPlanbookId(planbookId);
+
+        // Set planbook parameters to update
+        const planbookParams =
+          new planbookPb.UpdatePlanbookRequest.PlanbookParams();
+        if (requestData.planbook_params.price !== undefined) {
+          planbookParams.setPrice(requestData.planbook_params.price);
+        }
+        if (requestData.planbook_params.period) {
+          planbookParams.setPeriod(requestData.planbook_params.period);
+        }
+
+        grpcRequest.setPlanbookParams(planbookParams);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.UpdatePlanbookResponse>(
+              (callback) => client.updatePlanbook(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const planbooks = response
+            .getPlanbooksList()
+            .map((p) => p.toObject());
+
+          const responseData = {
+            planbooks: planbooks.map((planbook) => ({
+              id: planbook.id,
+              plan_id: planbook.planId,
+              business_id: planbook.businessId,
+              period: planbook.period,
+              price: planbook.price,
+              groupname: planbook.groupname,
+              tenant_id: planbook.tenantId,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error updating planbook entry:", error);
+
+          // Map gRPC error codes to appropriate HTTP status codes
+          if (error.code === Status.INVALID_ARGUMENT) {
+            return c.json({ error: "Invalid request parameters" }, 400);
+          } else if (error.code === Status.NOT_FOUND) {
+            return c.json({ error: "Planbook entry not found" }, 404);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to update planbook entry" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in update planbook route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  );

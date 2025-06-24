@@ -1,0 +1,33 @@
+syntax = "proto3";
+package radius;
+
+// DB Schema fields for radgroupreply (selectRadgroupreplySchema):
+// id, groupname, attribute, op, value, tenantId
+message Radgroupreply {
+  string id = 1;
+  string groupname = 2;
+  string attribute = 3;
+  string op = 4;
+  string value = 5;
+  string tenant_id = 6;
+}
+
+// DB Schema fields for radusergroup (selectRadusergroupSchema):
+// id, username, groupname, priority, tenantId
+message Radusergroup {
+  string id = 1;
+  string username = 2;
+  string groupname = 3;
+  int32 priority = 4;
+  string tenant_id = 5;
+}
+
+// RADIUS check record
+message RadCheck {
+  string id = 1;
+  string username = 2;
+  string attribute = 3;
+  string op = 4;
+  string value = 5;
+  string tenant_id = 6; // Adding tenant_id for consistency
+}
