@@ -45,6 +45,28 @@ export const businessRoutes = new Hono()
           schema: { type: "integer", default: 0 },
           description: "Pagination offset",
         },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter businesses by name",
+        },
+        {
+          name: "types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter businesses by type (B2B, B2C, B2B2C)",
+        },
+        {
+          name: "billing_types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description:
+            "Filter businesses by billing type (EndUser, Business, LeaseLine)",
+        },
       ],
       responses: {
         200: {
@@ -70,6 +92,9 @@ export const businessRoutes = new Hono()
       try {
         const limit = parseInt(c.req.query("limit") || "10");
         const offset = parseInt(c.req.query("offset") || "0");
+        const search = c.req.query("search") || "";
+        const types = c.req.queries("types") || [];
+        const billing_types = c.req.queries("billing_types") || [];
         const token = c.var.token;
 
         // Create gRPC request
@@ -83,6 +108,9 @@ export const businessRoutes = new Hono()
         // Set pagination parameters
         grpcRequest.setLimit(limit);
         grpcRequest.setOffset(offset);
+        grpcRequest.setSearch(search);
+        grpcRequest.setTypeList(types);
+        grpcRequest.setBillingTypeList(billing_types);
 
         // Get gRPC client and make the call
         const client = GrpcClient.getInstance().getBusinessClient();
@@ -100,16 +128,15 @@ export const businessRoutes = new Hono()
             .map((business) => business.toObject());
           const meta = response.getMeta()?.toObject();
 
-          console.log("Businesses:", businesses);
-          console.log("Meta:", meta);
-
-          const responseData = {
+          const responseData: z.infer<typeof getBusinessesResponseSchema> = {
             data: businesses.map((business) => ({
               id: business.id,
               name: business.name,
               type: business.type,
               billing_type: business.billingType,
               tenant_id: business.tenantId,
+              customer_count: business.customerCount,
+              planbook_count: business.planbookCount,
             })),
             meta: meta
               ? {
@@ -123,7 +150,6 @@ export const businessRoutes = new Hono()
                   offset,
                 },
           };
-          console.log("Response Data:", responseData);
           return c.json(responseData, 200);
         } catch (error: any) {
           console.error("Error listing businesses:", error);

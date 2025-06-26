@@ -10,10 +10,12 @@ import * as commonPb from "../../grpc/generated/common_pb";
 import {
   createPlanbookRequestSchema,
   createPlanbookResponseSchema,
+  getBusinessesPlanbookForPlanResponseSchema,
   getPlanbookRequestSchema,
   getPlanbookResponseSchema,
   getPlanbooksRequestSchema,
   getPlanbooksResponseSchema,
+  getPlansPlanbookForBusinessResponseSchema,
   planbookDetailsSchema,
   updatePlanbookRequestSchema,
   updatePlanbookResponseSchema,
@@ -420,8 +422,8 @@ export const planbookRoutes = new Hono()
             return c.json({ error: "Planbook entry not found" }, 404);
           }
 
-          const responseData = {
-            planbooks: planbooks.map((planbook) => ({
+          const responseData: z.infer<typeof getPlanbookResponseSchema> = {
+            data: planbooks.map((planbook) => ({
               id: planbook.id,
               plan_id: planbook.planId,
               business_id: planbook.businessId,
@@ -446,6 +448,330 @@ export const planbookRoutes = new Hono()
         }
       } catch (error) {
         console.error("Error in get planbook route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .get(
+    "/businesses/:plan_id",
+    describeRoute({
+      summary: "Get Businesses for Plan",
+      description: "Get businesses for a specific plan",
+      tags: ["Planbook"],
+      parameters: [
+        {
+          name: "plan_id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Plan ID",
+        },
+        {
+          name: "limit",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 10 },
+          description: "Pagination limit",
+        },
+        {
+          name: "offset",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 0 },
+          description: "Pagination offset",
+        },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter businesses",
+        },
+        {
+          name: "types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter plans by type (Commercial, Enterprise)",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Businesses retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(
+                getBusinessesPlanbookForPlanResponseSchema
+              ) as any,
+            },
+          },
+        },
+        404: {
+          description: "Plan not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const planId = c.req.param("plan_id");
+        if (!planId || !z.string().uuid().safeParse(planId).success) {
+          return c.json({ error: "Invalid plan ID" }, 400);
+        }
+        const limit = parseInt(c.req.query("limit") || "10");
+        const offset = parseInt(c.req.query("offset") || "0");
+        const search = c.req.query("search") || "";
+        const types = c.req.queries("types") || [];
+        const billing_types = c.req.queries("billing_types") || [];
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest =
+          new planbookPb.GetBusinessesPlanbookForPlanRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set pagination parameters
+        grpcRequest.setLimit(limit);
+        grpcRequest.setOffset(offset);
+        grpcRequest.setSearch(search);
+        grpcRequest.setTypeList(types);
+        grpcRequest.setBillingTypeList(billing_types);
+        grpcRequest.setPlanId(planId);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.GetBusinessesPlanbookForPlanResponse>(
+              (callback) =>
+                client.getBusinessesPlanbookForPlan(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const businesses = response
+            .getBusinessesList()
+            .map((business) => business.toObject());
+          const meta = response.getMeta()?.toObject();
+
+          const responseData: z.infer<
+            typeof getBusinessesPlanbookForPlanResponseSchema
+          > = {
+            data: businesses.map((business) => ({
+              id: business.id,
+              name: business.name,
+              type: business.type,
+              billing_type: business.billingType,
+              tenant_id: business.tenantId,
+              customer_count: business.customerCount,
+              price: business.price,
+              period: business.period,
+              business_id: business.businessId,
+            })),
+            meta: meta
+              ? {
+                  total: meta.total,
+                  limit: meta.limit,
+                  offset: meta.offset,
+                }
+              : {
+                  total: businesses.length,
+                  limit,
+                  offset,
+                },
+          };
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error listing businesses:", error);
+
+          if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to list businesses" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in list businesses route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .get(
+    "/plans/:business_id",
+    describeRoute({
+      summary: "Get Plans for Business",
+      description: "Get plans for a specific business",
+      tags: ["Planbook"],
+      parameters: [
+        {
+          name: "business_id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Business ID",
+        },
+        {
+          name: "limit",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 10 },
+          description: "Pagination limit",
+        },
+        {
+          name: "offset",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 0 },
+          description: "Pagination offset",
+        },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter businesses",
+        },
+        {
+          name: "types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter plans by type (Commercial, Enterprise)",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Plans retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(
+                getPlansPlanbookForBusinessResponseSchema
+              ) as any,
+            },
+          },
+        },
+        404: {
+          description: "Business not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const businessId = c.req.param("business_id");
+        if (!businessId || !z.string().uuid().safeParse(businessId).success) {
+          return c.json({ error: "Invalid business ID" }, 400);
+        }
+        const limit = parseInt(c.req.query("limit") || "10");
+        const offset = parseInt(c.req.query("offset") || "0");
+        const search = c.req.query("search") || "";
+        const types = c.req.queries("types") || [];
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new planbookPb.GetPlansPlanbookForBusinessRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set pagination parameters
+        grpcRequest.setLimit(limit);
+        grpcRequest.setOffset(offset);
+        grpcRequest.setSearch(search);
+        grpcRequest.setTypesList(types);
+        grpcRequest.setBusinessId(businessId);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getPlanbookClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<planbookPb.GetPlansPlanbookForBusinessResponse>(
+              (callback) =>
+                client.getPlansPlanbookForBusiness(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const plans = response.getPlansList().map((plan) => plan.toObject());
+          const meta = response.getMeta()?.toObject();
+
+          const responseData: z.infer<
+            typeof getPlansPlanbookForBusinessResponseSchema
+          > = {
+            data: plans.map((plan) => ({
+              id: plan.id,
+              name: plan.name,
+              up_speed: plan.upSpeed,
+              down_speed: plan.downSpeed,
+              up_speed_unit: plan.upSpeedUnit,
+              down_speed_unit: plan.downSpeedUnit,
+              is_post_fup: plan.isPostFup,
+              data_limit: plan.dataLimit,
+              type: plan.type,
+              price: plan.price,
+              period: plan.period,
+              customer_count: plan.customerCount,
+              tenant_id: plan.tenantId,
+              plan_id: plan.planId,
+            })),
+            meta: meta
+              ? {
+                  total: meta.total,
+                  limit: meta.limit,
+                  offset: meta.offset,
+                }
+              : {
+                  total: plans.length,
+                  limit,
+                  offset,
+                },
+          };
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error listing businesses:", error);
+
+          if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to list businesses" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in list businesses route:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
     }

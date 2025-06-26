@@ -3,16 +3,13 @@ import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator as zValidator } from "hono-openapi/zod";
 import { z } from "zod";
-import { extendZodWithOpenApi } from "zod-openapi";
 import { GrpcClient } from "../../grpc/grpc-client";
 import * as planPb from "../../grpc/generated/plan_pb";
 import * as commonPb from "../../grpc/generated/common_pb";
 import {
   createPlanRequestSchema,
   createPlanResponseSchema,
-  getPlanRequestSchema,
   getPlanResponseSchema,
-  getPlansRequestSchema,
   getPlansResponseSchema,
   updatePlanRequestSchema,
   updatePlanResponseSchema,
@@ -129,7 +126,7 @@ export const planRoutes = new Hono()
           const plans = response.getPlansList().map((p) => p.toObject());
           const meta = response.getMeta()?.toObject();
 
-          const responseData = {
+          const responseData: z.infer<typeof getPlansResponseSchema> = {
             data: plans.map((plan) => ({
               id: plan.id,
               name: plan.name,
@@ -139,8 +136,10 @@ export const planRoutes = new Hono()
               up_speed_unit: plan.upSpeedUnit,
               down_speed_unit: plan.downSpeedUnit,
               is_post_fup: plan.isPostFup,
-              data_limit: plan.dataLimit,
+              data_limit: plan.dataLimit ? parseInt(plan.dataLimit) : undefined,
               tenant_id: plan.tenantId,
+              planbook_count: plan.planbookCount,
+              customer_count: plan.customerCount,
             })),
             meta: meta
               ? {

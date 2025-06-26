@@ -21,6 +21,7 @@ import {
   updateCustomerPlanResponseSchema,
   restoreCustomerPlanRequestSchema,
   restoreCustomerPlanResponseSchema,
+  getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema,
 } from "../../lib/models/provisioning";
 import { errorSchema } from "../../lib/utils/routingUtils";
 import { Status } from "@grpc/grpc-js/build/src/constants";
@@ -180,116 +181,6 @@ export const customersRoutes = new Hono()
     }
   )
   .get(
-    "/:customerId",
-    describeRoute({
-      summary: "Get Customer",
-      description: "Get customer details by ID",
-      tags: ["Customers"],
-      parameters: [
-        {
-          name: "customerId",
-          in: "path",
-          required: true,
-          schema: { type: "string" },
-          description: "Customer ID",
-        },
-      ],
-      responses: {
-        200: {
-          description: "Customer details retrieved successfully",
-          content: {
-            "application/json": {
-              schema: resolver(getCustomerResponseSchema) as any,
-            },
-          },
-        },
-        404: {
-          description: "Customer not found",
-          content: {
-            "application/json": {
-              schema: resolver(errorSchema) as any,
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: resolver(errorSchema) as any,
-            },
-          },
-        },
-      },
-    }),
-    authMiddleware,
-    async (c) => {
-      try {
-        const customerId = c.req.param("customerId");
-        const token = c.var.token;
-
-        // Create gRPC request
-        const grpcRequest = new customersPb.GetCustomerRequest();
-        grpcRequest.setCustomerId(customerId);
-
-        // Set auth context
-        const authContext = new commonPb.AuthContext();
-        authContext.setToken(token);
-        grpcRequest.setAuthContext(authContext);
-
-        // Get gRPC client and make the call
-        const client = GrpcClient.getInstance().getCustomerClient();
-
-        try {
-          // Use promisifyGrpcCall instead of manual Promise creation
-          const response =
-            await promisifyGrpcCall<customersPb.GetCustomerResponse>(
-              (callback) => client.getCustomer(grpcRequest, callback)
-            );
-
-          // Convert gRPC response to our schema format
-          const customers = response
-            .getCustomersList()
-            .map((c) => c.toObject());
-
-          if (!customers || customers.length === 0) {
-            return c.json({ error: "Customer not found" }, 404);
-          }
-
-          const responseData = {
-            customers: customers.map((customer) => ({
-              id: customer.id,
-              name: customer.name,
-              email: customer.email,
-              username: customer.username,
-              subscription_plan: customer.subscriptionPlan || undefined,
-              post_fup_plan: customer.postFupPlan || undefined,
-              created_at: customer.createdAt,
-              active: customer.active,
-              last_renew_date: customer.lastRenewDate,
-              data_usage: customer.dataUsage,
-              tenant_id: customer.tenantId,
-            })),
-          };
-
-          return c.json(responseData, 200);
-        } catch (error: any) {
-          console.error("Error getting customer:", error);
-
-          if (error.code === Status.NOT_FOUND) {
-            return c.json({ error: "Customer not found" }, 404);
-          } else if (error.code === Status.PERMISSION_DENIED) {
-            return c.json({ error: "Permission denied" }, 403);
-          }
-
-          return c.json({ error: "Failed to get customer" }, 500);
-        }
-      } catch (error) {
-        console.error("Error in get customer route:", error);
-        return c.json({ error: "Internal server error" }, 500);
-      }
-    }
-  )
-  .get(
     "/",
     describeRoute({
       summary: "List Customers",
@@ -415,7 +306,7 @@ export const customersRoutes = new Hono()
           console.log("Customers:", customers);
           console.log("Meta:", meta);
 
-          const responseData = {
+          const responseData: z.infer<typeof getCustomersResponseSchema> = {
             data: customers.map((customer) => ({
               id: customer.id,
               name: customer.name,
@@ -425,12 +316,15 @@ export const customersRoutes = new Hono()
               post_fup_plan: customer.postFupPlan || undefined,
               created_at: customer.createdAt,
               active: customer.active,
-              last_renew_date: customer.lastRenewDate,
+              last_renew_date: customer.lastRenewDate || undefined,
               data_usage: customer.dataUsage,
               data_limit: customer.dataLimit,
               tenant_id: customer.tenantId,
-              plan_name: customer.planName,
-              business_name: customer.businessName,
+              plan_name: customer.planName || undefined,
+              business_name: customer.businessName || undefined,
+              plan_id: customer.planId || undefined,
+              business_id: customer.businessId || undefined,
+              last_active: customer.lastActive,
             })),
             meta: meta
               ? {
@@ -457,6 +351,297 @@ export const customersRoutes = new Hono()
         }
       } catch (error) {
         console.error("Error in list customers route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .get(
+    "/info",
+    describeRoute({
+      summary: "List Customers with Info for Plan, Business and Planbook",
+      description:
+        "List all customers with info for plan, business and planbook with pagination and filtering",
+      tags: ["Customers"],
+      parameters: [
+        {
+          name: "limit",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 10 },
+          description: "Pagination limit",
+        },
+        {
+          name: "offset",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 0 },
+          description: "Pagination offset",
+        },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter by name, username, or email",
+        },
+        {
+          name: "plan_ids",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of plan IDs to filter by",
+        },
+        {
+          name: "business_ids",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of business IDs to filter by",
+        },
+        {
+          name: "status",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "boolean" } },
+          description: "List of status values to filter by (active/inactive)",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Customers retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(getCustomersResponseSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const limit = parseInt(c.req.query("limit") || "10");
+        const offset = parseInt(c.req.query("offset") || "0");
+        const search = c.req.query("search");
+        const planIds = c.req.queries("plan_ids");
+        const businessIds = c.req.queries("business_ids");
+        const statusValues = c.req.queries("status")?.map((s) => s === "true");
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest =
+          new customersPb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set pagination parameters
+        grpcRequest.setLimit(limit);
+        grpcRequest.setOffset(offset);
+
+        // Set optional filters
+        if (search) {
+          grpcRequest.setSearch(search);
+        }
+
+        if (planIds && planIds.length > 0) {
+          grpcRequest.setPlanIdsList(planIds);
+        }
+
+        if (businessIds && businessIds.length > 0) {
+          grpcRequest.setBusinessIdsList(businessIds);
+        }
+
+        if (statusValues && statusValues.length > 0) {
+          grpcRequest.setStatusList(statusValues);
+        }
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getCustomerClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<customersPb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse>(
+              (callback) =>
+                client.getCustomersWithPlanBusinessAndPlanbookInfo(
+                  grpcRequest,
+                  callback
+                )
+            );
+
+          // Convert gRPC response to our schema format
+          const customers = response.getDataList().map((c) => c.toObject());
+          const meta = response.getMeta()?.toObject();
+
+          console.log("Customers:", customers);
+          console.log("Meta:", meta);
+
+          const responseData: z.infer<
+            typeof getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema
+          > = {
+            data: customers.map((customer) => ({
+              id: customer.id,
+              name: customer.name,
+              username: customer.username,
+              subscription_plan: customer.subscriptionPlan || undefined,
+              post_fup_plan: customer.postFupPlan || undefined,
+              active: customer.active,
+              last_active: customer.lastActive,
+              tenant_id: customer.tenantId,
+              plan_name: customer.planName || undefined,
+              business_name: customer.businessName || undefined,
+              plan_id: customer.planId || undefined,
+              business_id: customer.businessId || undefined,
+              period: customer.period || undefined,
+              price: customer.price || undefined,
+            })),
+            meta: meta
+              ? {
+                  total: meta.total,
+                  limit: meta.limit,
+                  offset: meta.offset,
+                }
+              : {
+                  total: customers.length,
+                  limit,
+                  offset,
+                },
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error listing customers:", error);
+
+          if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to list customers" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in list customers route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .get(
+    "/:customerId",
+    describeRoute({
+      summary: "Get Customer",
+      description: "Get customer details by ID",
+      tags: ["Customers"],
+      parameters: [
+        {
+          name: "customerId",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Customer ID",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Customer details retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(getCustomerResponseSchema) as any,
+            },
+          },
+        },
+        404: {
+          description: "Customer not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const customerId = c.req.param("customerId");
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new customersPb.GetCustomerRequest();
+        grpcRequest.setCustomerId(customerId);
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getCustomerClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<customersPb.GetCustomerResponse>(
+              (callback) => client.getCustomer(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const customers = response
+            .getCustomersList()
+            .map((c) => c.toObject());
+
+          if (!customers || customers.length === 0) {
+            return c.json({ error: "Customer not found" }, 404);
+          }
+
+          const responseData: z.infer<typeof getCustomerResponseSchema> = {
+            data: customers.map((customer) => ({
+              id: customer.id,
+              name: customer.name,
+              email: customer.email,
+              username: customer.username,
+              subscription_plan: customer.subscriptionPlan || undefined,
+              post_fup_plan: customer.postFupPlan || undefined,
+              created_at: customer.createdAt,
+              active: customer.active,
+              last_renew_date: customer.lastRenewDate,
+              data_usage: customer.dataUsage,
+              last_active: customer.lastActive,
+              tenant_id: customer.tenantId,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error getting customer:", error);
+
+          if (error.code === Status.NOT_FOUND) {
+            return c.json({ error: "Customer not found" }, 404);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to get customer" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in get customer route:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
     }
