@@ -85,10 +85,10 @@ export const customerWithPlanInfoSchema = z
     last_renew_date: z.string().optional().openapi({
       description: "Last renewal date",
     }),
-    data_usage: z.string().regex(/^[0-9]+$/).openapi({
+    data_usage: z.number().int().openapi({
       description: "Customer's data usage in bytes",
     }),
-    data_limit: z.string().regex(/^[0-9]+$/).optional().openapi({
+    data_limit: z.number().int().optional().openapi({
       description: "Customer's data limit in bytes",
     }),
     last_active: z.string().datetime().openapi({
@@ -99,11 +99,71 @@ export const customerWithPlanInfoSchema = z
     }),
 
     // Extended fields from joins
-    plan_name: z.string().openapi({
+    plan_name: z.string().nullable().optional().openapi({
       description: "Name of the customer's plan",
     }),
-    business_name: z.string().openapi({
+    business_name: z.string().nullable().optional().openapi({
       description: "Name of the customer's business",
+    }),
+    plan_id: z.string().nullable().optional().openapi({
+      description: "ID of the customer's plan",
+    }),
+    business_id: z.string().nullable().optional().openapi({
+      description: "ID of the customer's business",
+    }),
+  })
+  .openapi({
+    title: "CustomerWithPlanInfo",
+    description:
+      "Extended customer information including plan and business details",
+  });
+
+export const customerWithPlanBusinessAndPlanbookInfoSchema = z
+  .object({
+    // Base customer fields
+    id: z.string().openapi({
+      description: "Customer ID",
+    }),
+    name: z.string().openapi({
+      description: "Customer name",
+    }),
+    username: z.string().openapi({
+      description: "Customer username for authentication",
+    }),
+    subscription_plan: z.string().optional().openapi({
+      description: "Customer's subscription plan",
+    }),
+    post_fup_plan: z.string().optional().openapi({
+      description: "Customer's post-FUP plan",
+    }),
+    active: z.boolean().openapi({
+      description: "Whether the customer is active",
+    }),
+    last_active: z.string().datetime().openapi({
+      description: "Last active timestamp",
+    }),
+    tenant_id: z.string().openapi({
+      description: "Tenant ID",
+    }),
+
+    // Extended fields from joins
+    plan_name: z.string().nullable().optional().openapi({
+      description: "Name of the customer's plan",
+    }),
+    plan_id: z.string().nullable().optional().openapi({
+      description: "ID of the customer's plan",
+    }),
+    business_name: z.string().nullable().optional().openapi({
+      description: "Name of the customer's business",
+    }),
+    business_id: z.string().nullable().optional().openapi({
+      description: "ID of the customer's business",
+    }),
+    price: z.string().nullable().optional().openapi({
+      description: "Price of the customer's plan",
+    }),
+    period: z.string().nullable().optional().openapi({
+      description: "Period of the customer's plan",
     }),
   })
   .openapi({
@@ -270,7 +330,7 @@ export const getCustomerRequestSchema = z
 // Response with customer details
 export const getCustomerResponseSchema = z
   .object({
-    customers: z.array(customerSchema).openapi({
+    data: z.array(customerSchema).openapi({
       description: "Retrieved customers",
     }),
   })
@@ -319,6 +379,48 @@ export const getCustomersResponseSchema = z
   .openapi({
     title: "GetCustomersResponse",
     description: "Response containing customers and pagination metadata",
+  });
+
+export const getCustomersWithPlanBusinessAndPlanbookInfoRequestSchema = z
+  .object({
+    limit: z.number().int().openapi({
+      description: "Pagination limit (max number of items to return)",
+    }),
+    offset: z.number().int().openapi({
+      description: "Pagination offset (starting position)",
+    }),
+    search: z.string().optional().openapi({
+      description: "Optional search term to filter by name, username, or email",
+    }),
+    plan_ids: z.array(z.string()).optional().openapi({
+      description: "Optional list of plan IDs to filter by",
+    }),
+    business_ids: z.array(z.string()).optional().openapi({
+      description: "Optional list of business IDs to filter by",
+    }),
+    status: z.array(z.boolean()).optional().openapi({
+      description: "Optional status filter (active/inactive)",
+    }),
+  })
+  .openapi({
+    title: "GetCustomersWithPlanBusinessAndPlanbookInfoRequest",
+    description:
+      "Request for getting customers with plan, business, and planbook information with filtering and pagination",
+  });
+
+export const getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema = z
+  .object({
+    data: z.array(customerWithPlanBusinessAndPlanbookInfoSchema).openapi({
+      description: "List of customers with extended information",
+    }),
+    meta: paginationMetaSchema.optional().openapi({
+      description: "Pagination metadata",
+    }),
+  })
+  .openapi({
+    title: "GetCustomersWithPlanBusinessAndPlanbookInfoResponse",
+    description:
+      "Response containing customers with plan, business, and planbook information",
   });
 
 // Request to restore a customer's plan after FUP enforcement

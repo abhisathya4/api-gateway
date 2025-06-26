@@ -238,7 +238,7 @@ export const getPlansResponseSchema = z
     data: z.array(planWithCountsSchema).openapi({
       description: "List of plans with counts",
     }),
-    meta: paginationMetaSchema.openapi({
+    meta: paginationMetaSchema.optional().openapi({
       description: "Pagination metadata",
     }),
   })

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authContextSchema } from "./common";
+import { authContextSchema, paginationMetaSchema } from "./common";
 import "zod-openapi/extend";
 
 // Business schema definition based on business.proto
@@ -164,7 +164,15 @@ export const getBusinessResponseSchema = z
 // Request to get all businesses
 export const getBusinessesRequestSchema = z
   .object({
-
+    limit: z.number().optional().openapi({
+      description: "Limit for pagination",
+    }),
+    offset: z.number().optional().openapi({
+      description: "Offset for pagination",
+    }),
+    search: z.string().optional().openapi({
+      description: "Search query",
+    }),
   })
   .openapi({
     title: "GetBusinessesRequest",
@@ -174,8 +182,11 @@ export const getBusinessesRequestSchema = z
 // Response with all businesses
 export const getBusinessesResponseSchema = z
   .object({
-    data: z.array(businessSchema).openapi({
+    data: z.array(businessWithCountsSchema).openapi({
       description: "List of businesses",
+    }),
+    meta: paginationMetaSchema.openapi({
+      description: "Pagination metadata",
     }),
   })
   .openapi({

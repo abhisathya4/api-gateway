@@ -190,7 +190,7 @@ export const getPlanbookRequestSchema = z
 // Response with planbook entry details
 export const getPlanbookResponseSchema = z
   .object({
-    planbooks: z.array(planbookSchema).openapi({
+    data: z.array(planbookSchema).openapi({
       description: "Retrieved planbook entries",
     }),
   })
@@ -240,4 +240,170 @@ export const getPlanbooksResponseSchema = z
   .openapi({
     title: "GetPlanbooksResponse",
     description: "Response with all planbook entries",
+  });
+
+// Business for plan schema
+export const businessPlanbookForPlanSchema = z
+  .object({
+    id: z.string().openapi({
+      description: "Business ID",
+    }),
+    name: z.string().openapi({
+      description: "Business name",
+    }),
+    type: z.string().openapi({
+      description: "Business type",
+    }),
+    billing_type: z.string().openapi({
+      description: "Billing type",
+    }),
+    customer_count: z.number().int().openapi({
+      description: "Number of customers associated with this business",
+    }),
+    price: z.string().openapi({
+      description: "Price of the plan",
+    }),
+    period: z.string().openapi({
+      description: "Period of the plan",
+    }),
+    tenant_id: z.string().openapi({
+      description: "Tenant ID",
+    }),
+    business_id: z.string().uuid().openapi({
+      description: "Business ID",
+    }),
+  })
+  .openapi({
+    title: "BusinessPlanbookForPlan",
+    description: "Business planbook entity for plan",
+  });
+
+export const getBusinessesForPlanRequestSchema = z
+  .object({
+    limit: z.number().int().openapi({
+      description: "Pagination limit (max number of items to return)",
+    }),
+    offset: z.number().int().openapi({
+      description: "Pagination offset (starting position)",
+    }),
+    search: z.string().openapi({
+      description: "Search term to filter businesses by name",
+    }),
+    types: z.array(z.string()).openapi({
+      description: "Filter businesses by type (B2B, B2B2C, B2C)",
+    }),
+    billing_type: z.array(z.string()).openapi({
+      description:
+        "Filter businesses by billing type (EndUser, LeaseLine, Business)",
+    }),
+    plan_id: z.string().openapi({
+      description: "Plan ID",
+    }),
+  })
+  .openapi({
+    title: "GetBusinessesForPlanRequest",
+    description: "Request to get businesses for a specific plan",
+  });
+
+// Response with all businesses
+export const getBusinessesPlanbookForPlanResponseSchema = z
+  .object({
+    data: z.array(businessPlanbookForPlanSchema).openapi({
+      description: "List of businesses",
+    }),
+    meta: paginationMetaSchema.openapi({
+      description: "Pagination metadata",
+    }),
+  })
+  .openapi({
+    title: "GetBusinessesPlanbookForPlanResponse",
+    description: "Response with all businesses for a specific plan",
+  });
+
+export const planPlanbookForBusinessSchema = z
+  .object({
+    id: z.string().openapi({
+      description: "Plan ID",
+    }),
+    name: z.string().openapi({
+      description: "Plan name",
+    }),
+    up_speed: z.number().int().openapi({
+      description: "Plan upload speed",
+    }),
+    down_speed: z.number().int().openapi({
+      description: "Plan download speed",
+    }),
+    up_speed_unit: z.string().openapi({
+      description: "Plan upload speed unit (Kbps, Mbps, etc.)",
+    }),
+    down_speed_unit: z.string().openapi({
+      description: "Plan download speed unit (Kbps, Mbps, etc.)",
+    }),
+    is_post_fup: z.boolean().openapi({
+      description: "Plan post FUP (true or false)",
+    }),
+    data_limit: z.string().optional().openapi({
+      description: "Plan data limit",
+    }),
+    type: z.string().openapi({
+      description: "Plan type (Commercial, Enterprise, etc.)",
+    }),
+    price: z.string().openapi({
+      description: "Plan price",
+    }),
+    period: z.string().openapi({
+      description: "Plan period (e.g., monthly, yearly)",
+    }),
+    customer_count: z.number().int().openapi({
+      description: "Number of customers associated with this plan",
+    }),
+    tenant_id: z.string().openapi({
+      description: "Tenant ID",
+    }),
+    plan_id: z.string().uuid().openapi({
+      description: "Plan ID",
+    }),
+  })
+  .openapi({
+    title: "PlanPlanbookForBusiness",
+    description: "Plan planbook entity for business",
+  });
+
+export const getPlansPlanbookForBusinessRequestSchema = z
+  .object({
+    limit: z.number().int().openapi({
+      description: "Pagination limit (max number of items to return)",
+    }),
+    offset: z.number().int().openapi({
+      description: "Pagination offset (starting position)",
+    }),
+    search: z.string().openapi({
+      description: "Search term to filter plans by name",
+    }),
+    types: z.array(z.string()).openapi({
+      description: "Filter plans by type (Commercial, Enterprise)",
+    }),
+    business_id: z.string().openapi({
+      description: "Business ID",
+    }),
+  })
+  .openapi({
+    title: "GetPlansPlanbookForBusinessRequest",
+    description: "Request to get plans for a specific business",
+  });
+
+// Response with all plans
+export const getPlansPlanbookForBusinessResponseSchema = z
+  .object({
+    data: z.array(planPlanbookForBusinessSchema).openapi({
+      description: "List of plans",
+    }),
+    meta: paginationMetaSchema.optional().openapi({
+      description: "Pagination metadata",
+    }),
+  })
+  .openapi({
+    title: "GetPlansPlanbookForBusinessResponse",
+    description: "Response with all plans for a specific business",
   });
