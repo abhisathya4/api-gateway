@@ -54,6 +54,12 @@ service PlanbookService {
   
   // Get all planbook entries
   rpc GetPlanbooks(GetPlanbooksRequest) returns (GetPlanbooksResponse);
+
+  // Get businesses planbook for a specific plan
+  rpc GetBusinessesPlanbookForPlan(GetBusinessesPlanbookForPlanRequest) returns (GetBusinessesPlanbookForPlanResponse);
+
+  // Get plans planbook for a specific business
+  rpc GetPlansPlanbookForBusiness(GetPlansPlanbookForBusinessRequest) returns (GetPlansPlanbookForBusinessResponse);
 }
 
 // Request to create a new planbook entry
@@ -136,6 +142,92 @@ message GetPlanbooksRequest {
 message GetPlanbooksResponse {
   // List of planbook entries
   repeated PlanbookDetails planbooks = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}
+
+message BusinessPlanbookForPlan {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string billing_type = 4;
+  int32 customer_count = 5;
+  string price = 6;
+  string period = 7;
+  string tenant_id = 8;
+  string business_id = 9;
+}
+
+message GetBusinessesPlanbookForPlanRequest {
+  common.AuthContext auth_context = 1;
+  string plan_id = 2;
+
+  // Pagination limit (max number of items to return)
+  int32 limit = 3;
+  
+  // Pagination offset (starting position)
+  int32 offset = 4;
+
+  // Search term to filter businesses
+  optional string search = 5;
+
+  // Filter for business types
+  repeated string type = 6;
+
+  // Filter for billing types
+  repeated string billing_type = 7;
+}
+
+// Response with all businesses
+message GetBusinessesPlanbookForPlanResponse {
+  // List of businesses
+  repeated BusinessPlanbookForPlan businesses = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}
+
+message PlansPlanbookForBusiness {
+  string id = 1;
+  string name = 2;
+  int32 up_speed = 3;
+  int32 down_speed = 4;
+  string up_speed_unit = 5;
+  string down_speed_unit = 6;
+  bool is_post_fup = 7;
+  optional string data_limit = 8;
+  string type = 9;
+  string price = 10;
+  string period = 11;
+  int32 customer_count = 12;
+  string tenant_id = 13;
+  string plan_id = 14;
+}
+
+// Request to get all internet service plans
+message GetPlansPlanbookForBusinessRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Search term to filter plans by name
+  string search = 4;
+  
+  // Filter plans by type (Commercial, Enterprise)
+  repeated string types = 5;
+
+  // Filter plans by business id
+  string business_id = 6;
+}
+
+message GetPlansPlanbookForBusinessResponse {
+  // List of plans
+  repeated PlansPlanbookForBusiness plans = 1;
   
   // Pagination metadata
   common.PaginationMeta meta = 2;

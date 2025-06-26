@@ -326,6 +326,19 @@ export class GetBusinessesRequest extends jspb.Message {
     getOffset(): number;
     setOffset(value: number): GetBusinessesRequest;
 
+    hasSearch(): boolean;
+    clearSearch(): void;
+    getSearch(): string | undefined;
+    setSearch(value: string): GetBusinessesRequest;
+    clearTypeList(): void;
+    getTypeList(): Array<string>;
+    setTypeList(value: Array<string>): GetBusinessesRequest;
+    addType(value: string, index?: number): string;
+    clearBillingTypeList(): void;
+    getBillingTypeList(): Array<string>;
+    setBillingTypeList(value: Array<string>): GetBusinessesRequest;
+    addBillingType(value: string, index?: number): string;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetBusinessesRequest.AsObject;
     static toObject(includeInstance: boolean, msg: GetBusinessesRequest): GetBusinessesRequest.AsObject;
@@ -341,6 +354,9 @@ export namespace GetBusinessesRequest {
         authContext?: common_pb.AuthContext.AsObject,
         limit: number,
         offset: number,
+        search?: string,
+        typeList: Array<string>,
+        billingTypeList: Array<string>,
     }
 }
 

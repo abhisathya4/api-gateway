@@ -20,7 +20,8 @@ service BusinessService {
   
   // Get all businesses
   rpc GetBusinesses(GetBusinessesRequest) returns (GetBusinessesResponse);
-}
+
+  }
 
 // Request to create a new business
 message CreateBusinessRequest {
@@ -109,6 +110,15 @@ message GetBusinessesRequest {
   
   // Pagination offset (starting position)
   int32 offset = 3;
+
+  // Search term to filter businesses
+  optional string search = 4;
+
+  // Filter for business types
+  repeated string type = 5;
+
+  // Filter for billing types
+  repeated string billing_type = 6;
 }
 
 // Response with all businesses

@@ -263,10 +263,26 @@ export class CustomerWithPlanInfo extends jspb.Message {
     setLastActive(value?: google_protobuf_timestamp_pb.Timestamp): CustomerWithPlanInfo;
     getTenantId(): string;
     setTenantId(value: string): CustomerWithPlanInfo;
-    getPlanName(): string;
+
+    hasPlanName(): boolean;
+    clearPlanName(): void;
+    getPlanName(): string | undefined;
     setPlanName(value: string): CustomerWithPlanInfo;
-    getBusinessName(): string;
+
+    hasBusinessName(): boolean;
+    clearBusinessName(): void;
+    getBusinessName(): string | undefined;
     setBusinessName(value: string): CustomerWithPlanInfo;
+
+    hasPlanId(): boolean;
+    clearPlanId(): void;
+    getPlanId(): string | undefined;
+    setPlanId(value: string): CustomerWithPlanInfo;
+
+    hasBusinessId(): boolean;
+    clearBusinessId(): void;
+    getBusinessId(): string | undefined;
+    setBusinessId(value: string): CustomerWithPlanInfo;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CustomerWithPlanInfo.AsObject;
@@ -293,8 +309,174 @@ export namespace CustomerWithPlanInfo {
         dataLimit: number,
         lastActive?: google_protobuf_timestamp_pb.Timestamp.AsObject,
         tenantId: string,
-        planName: string,
-        businessName: string,
+        planName?: string,
+        businessName?: string,
+        planId?: string,
+        businessId?: string,
+    }
+}
+
+export class CustomerWithPlanBusinessAndPlanbookInfo extends jspb.Message { 
+    getId(): string;
+    setId(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+    getName(): string;
+    setName(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+    getUsername(): string;
+    setUsername(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasSubscriptionPlan(): boolean;
+    clearSubscriptionPlan(): void;
+    getSubscriptionPlan(): string | undefined;
+    setSubscriptionPlan(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasPostFupPlan(): boolean;
+    clearPostFupPlan(): void;
+    getPostFupPlan(): string | undefined;
+    setPostFupPlan(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+    getActive(): boolean;
+    setActive(value: boolean): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasLastActive(): boolean;
+    clearLastActive(): void;
+    getLastActive(): google_protobuf_timestamp_pb.Timestamp | undefined;
+    setLastActive(value?: google_protobuf_timestamp_pb.Timestamp): CustomerWithPlanBusinessAndPlanbookInfo;
+    getTenantId(): string;
+    setTenantId(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasPlanName(): boolean;
+    clearPlanName(): void;
+    getPlanName(): string | undefined;
+    setPlanName(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasBusinessName(): boolean;
+    clearBusinessName(): void;
+    getBusinessName(): string | undefined;
+    setBusinessName(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasPlanId(): boolean;
+    clearPlanId(): void;
+    getPlanId(): string | undefined;
+    setPlanId(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasBusinessId(): boolean;
+    clearBusinessId(): void;
+    getBusinessId(): string | undefined;
+    setBusinessId(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasPrice(): boolean;
+    clearPrice(): void;
+    getPrice(): string | undefined;
+    setPrice(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasPeriod(): boolean;
+    clearPeriod(): void;
+    getPeriod(): string | undefined;
+    setPeriod(value: string): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CustomerWithPlanBusinessAndPlanbookInfo.AsObject;
+    static toObject(includeInstance: boolean, msg: CustomerWithPlanBusinessAndPlanbookInfo): CustomerWithPlanBusinessAndPlanbookInfo.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CustomerWithPlanBusinessAndPlanbookInfo, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CustomerWithPlanBusinessAndPlanbookInfo;
+    static deserializeBinaryFromReader(message: CustomerWithPlanBusinessAndPlanbookInfo, reader: jspb.BinaryReader): CustomerWithPlanBusinessAndPlanbookInfo;
+}
+
+export namespace CustomerWithPlanBusinessAndPlanbookInfo {
+    export type AsObject = {
+        id: string,
+        name: string,
+        username: string,
+        subscriptionPlan?: string,
+        postFupPlan?: string,
+        active: boolean,
+        lastActive?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+        tenantId: string,
+        planName?: string,
+        businessName?: string,
+        planId?: string,
+        businessId?: string,
+        price?: string,
+        period?: string,
+    }
+}
+
+export class GetCustomersWithPlanBusinessAndPlanbookInfoRequest extends jspb.Message { 
+
+    hasAuthContext(): boolean;
+    clearAuthContext(): void;
+    getAuthContext(): common_pb.AuthContext | undefined;
+    setAuthContext(value?: common_pb.AuthContext): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    getLimit(): number;
+    setLimit(value: number): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    getOffset(): number;
+    setOffset(value: number): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+
+    hasSearch(): boolean;
+    clearSearch(): void;
+    getSearch(): string | undefined;
+    setSearch(value: string): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    clearPlanIdsList(): void;
+    getPlanIdsList(): Array<string>;
+    setPlanIdsList(value: Array<string>): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    addPlanIds(value: string, index?: number): string;
+    clearBusinessIdsList(): void;
+    getBusinessIdsList(): Array<string>;
+    setBusinessIdsList(value: Array<string>): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    addBusinessIds(value: string, index?: number): string;
+    clearStatusList(): void;
+    getStatusList(): Array<boolean>;
+    setStatusList(value: Array<boolean>): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    addStatus(value: boolean, index?: number): boolean;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetCustomersWithPlanBusinessAndPlanbookInfoRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetCustomersWithPlanBusinessAndPlanbookInfoRequest): GetCustomersWithPlanBusinessAndPlanbookInfoRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetCustomersWithPlanBusinessAndPlanbookInfoRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+    static deserializeBinaryFromReader(message: GetCustomersWithPlanBusinessAndPlanbookInfoRequest, reader: jspb.BinaryReader): GetCustomersWithPlanBusinessAndPlanbookInfoRequest;
+}
+
+export namespace GetCustomersWithPlanBusinessAndPlanbookInfoRequest {
+    export type AsObject = {
+        authContext?: common_pb.AuthContext.AsObject,
+        limit: number,
+        offset: number,
+        search?: string,
+        planIdsList: Array<string>,
+        businessIdsList: Array<string>,
+        statusList: Array<boolean>,
+    }
+}
+
+export class GetCustomersWithPlanBusinessAndPlanbookInfoResponse extends jspb.Message { 
+    clearDataList(): void;
+    getDataList(): Array<CustomerWithPlanBusinessAndPlanbookInfo>;
+    setDataList(value: Array<CustomerWithPlanBusinessAndPlanbookInfo>): GetCustomersWithPlanBusinessAndPlanbookInfoResponse;
+    addData(value?: CustomerWithPlanBusinessAndPlanbookInfo, index?: number): CustomerWithPlanBusinessAndPlanbookInfo;
+
+    hasMeta(): boolean;
+    clearMeta(): void;
+    getMeta(): common_pb.PaginationMeta | undefined;
+    setMeta(value?: common_pb.PaginationMeta): GetCustomersWithPlanBusinessAndPlanbookInfoResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetCustomersWithPlanBusinessAndPlanbookInfoResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: GetCustomersWithPlanBusinessAndPlanbookInfoResponse): GetCustomersWithPlanBusinessAndPlanbookInfoResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetCustomersWithPlanBusinessAndPlanbookInfoResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetCustomersWithPlanBusinessAndPlanbookInfoResponse;
+    static deserializeBinaryFromReader(message: GetCustomersWithPlanBusinessAndPlanbookInfoResponse, reader: jspb.BinaryReader): GetCustomersWithPlanBusinessAndPlanbookInfoResponse;
+}
+
+export namespace GetCustomersWithPlanBusinessAndPlanbookInfoResponse {
+    export type AsObject = {
+        dataList: Array<CustomerWithPlanBusinessAndPlanbookInfo.AsObject>,
+        meta?: common_pb.PaginationMeta.AsObject,
     }
 }
 

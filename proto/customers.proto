@@ -27,6 +27,9 @@ service CustomerService {
   
   // Restore a customer's plan after FUP enforcement
   rpc RestoreCustomerPlan(RestoreCustomerPlanRequest) returns (RestoreCustomerPlanResponse);
+
+  // Get customers with plan, business, and planbook information with filtering and pagination
+  rpc GetCustomersWithPlanBusinessAndPlanbookInfo(GetCustomersWithPlanBusinessAndPlanbookInfoRequest) returns (GetCustomersWithPlanBusinessAndPlanbookInfoResponse);
 }
 
 // Request to create a new customer
@@ -124,8 +127,45 @@ message CustomerWithPlanInfo {
   string tenant_id = 13;
   
   // Extended fields from joins
-  string plan_name = 14;
-  string business_name = 15;
+  optional string plan_name = 14;
+  optional string business_name = 15;
+  optional string plan_id = 16;
+  optional string business_id = 17;
+}
+
+message CustomerWithPlanBusinessAndPlanbookInfo {
+  // Base customer fields
+  string id = 1;
+  string name = 2;
+  string username = 3;
+  optional string subscription_plan = 4;
+  optional string post_fup_plan = 5;
+  bool active = 6;
+  google.protobuf.Timestamp last_active = 7;
+  string tenant_id = 8;
+  
+  // Extended fields from joins
+  optional string plan_name = 9;
+  optional string business_name = 14;
+  optional string plan_id = 15;
+  optional string business_id = 16;
+  optional string price = 17;
+  optional string period = 18;
+}
+
+message GetCustomersWithPlanBusinessAndPlanbookInfoRequest {
+  common.AuthContext auth_context = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  optional string search = 4;
+  repeated string plan_ids = 5;
+  repeated string business_ids = 6;
+  repeated bool status = 7;
+}
+
+message GetCustomersWithPlanBusinessAndPlanbookInfoResponse {
+  repeated CustomerWithPlanBusinessAndPlanbookInfo data = 1;
+  common.PaginationMeta meta = 2;
 }
 
 // Response from creating a new customer

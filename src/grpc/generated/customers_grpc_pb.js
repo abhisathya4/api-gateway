@@ -75,6 +75,28 @@ function deserialize_customers_GetCustomersResponse(buffer_arg) {
   return customers_pb.GetCustomersResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRequest(arg) {
+  if (!(arg instanceof customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest)) {
+    throw new Error('Expected argument of type customers.GetCustomersWithPlanBusinessAndPlanbookInfoRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRequest(buffer_arg) {
+  return customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse(arg) {
+  if (!(arg instanceof customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse)) {
+    throw new Error('Expected argument of type customers.GetCustomersWithPlanBusinessAndPlanbookInfoResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse(buffer_arg) {
+  return customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_customers_RestoreCustomerPlanRequest(arg) {
   if (!(arg instanceof customers_pb.RestoreCustomerPlanRequest)) {
     throw new Error('Expected argument of type customers.RestoreCustomerPlanRequest');
@@ -215,6 +237,18 @@ restoreCustomerPlan: {
     requestDeserialize: deserialize_customers_RestoreCustomerPlanRequest,
     responseSerialize: serialize_customers_RestoreCustomerPlanResponse,
     responseDeserialize: deserialize_customers_RestoreCustomerPlanResponse,
+  },
+  // Get customers with plan, business, and planbook information with filtering and pagination
+getCustomersWithPlanBusinessAndPlanbookInfo: {
+    path: '/customers.CustomerService/GetCustomersWithPlanBusinessAndPlanbookInfo',
+    requestStream: false,
+    responseStream: false,
+    requestType: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest,
+    responseType: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse,
+    requestSerialize: serialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRequest,
+    requestDeserialize: deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRequest,
+    responseSerialize: serialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse,
+    responseDeserialize: deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse,
   },
 };
 

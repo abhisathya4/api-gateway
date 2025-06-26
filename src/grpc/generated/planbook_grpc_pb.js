@@ -30,6 +30,28 @@ function deserialize_planbook_CreatePlanbookResponse(buffer_arg) {
   return planbook_pb.CreatePlanbookResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_planbook_GetBusinessesPlanbookForPlanRequest(arg) {
+  if (!(arg instanceof planbook_pb.GetBusinessesPlanbookForPlanRequest)) {
+    throw new Error('Expected argument of type planbook.GetBusinessesPlanbookForPlanRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetBusinessesPlanbookForPlanRequest(buffer_arg) {
+  return planbook_pb.GetBusinessesPlanbookForPlanRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_planbook_GetBusinessesPlanbookForPlanResponse(arg) {
+  if (!(arg instanceof planbook_pb.GetBusinessesPlanbookForPlanResponse)) {
+    throw new Error('Expected argument of type planbook.GetBusinessesPlanbookForPlanResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetBusinessesPlanbookForPlanResponse(buffer_arg) {
+  return planbook_pb.GetBusinessesPlanbookForPlanResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_planbook_GetPlanbookRequest(arg) {
   if (!(arg instanceof planbook_pb.GetPlanbookRequest)) {
     throw new Error('Expected argument of type planbook.GetPlanbookRequest');
@@ -72,6 +94,28 @@ function serialize_planbook_GetPlanbooksResponse(arg) {
 
 function deserialize_planbook_GetPlanbooksResponse(buffer_arg) {
   return planbook_pb.GetPlanbooksResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_planbook_GetPlansPlanbookForBusinessRequest(arg) {
+  if (!(arg instanceof planbook_pb.GetPlansPlanbookForBusinessRequest)) {
+    throw new Error('Expected argument of type planbook.GetPlansPlanbookForBusinessRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetPlansPlanbookForBusinessRequest(buffer_arg) {
+  return planbook_pb.GetPlansPlanbookForBusinessRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_planbook_GetPlansPlanbookForBusinessResponse(arg) {
+  if (!(arg instanceof planbook_pb.GetPlansPlanbookForBusinessResponse)) {
+    throw new Error('Expected argument of type planbook.GetPlansPlanbookForBusinessResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetPlansPlanbookForBusinessResponse(buffer_arg) {
+  return planbook_pb.GetPlansPlanbookForBusinessResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_planbook_UpdatePlanbookRequest(arg) {
@@ -146,6 +190,30 @@ getPlanbooks: {
     requestDeserialize: deserialize_planbook_GetPlanbooksRequest,
     responseSerialize: serialize_planbook_GetPlanbooksResponse,
     responseDeserialize: deserialize_planbook_GetPlanbooksResponse,
+  },
+  // Get businesses planbook for a specific plan
+getBusinessesPlanbookForPlan: {
+    path: '/planbook.PlanbookService/GetBusinessesPlanbookForPlan',
+    requestStream: false,
+    responseStream: false,
+    requestType: planbook_pb.GetBusinessesPlanbookForPlanRequest,
+    responseType: planbook_pb.GetBusinessesPlanbookForPlanResponse,
+    requestSerialize: serialize_planbook_GetBusinessesPlanbookForPlanRequest,
+    requestDeserialize: deserialize_planbook_GetBusinessesPlanbookForPlanRequest,
+    responseSerialize: serialize_planbook_GetBusinessesPlanbookForPlanResponse,
+    responseDeserialize: deserialize_planbook_GetBusinessesPlanbookForPlanResponse,
+  },
+  // Get plans planbook for a specific business
+getPlansPlanbookForBusiness: {
+    path: '/planbook.PlanbookService/GetPlansPlanbookForBusiness',
+    requestStream: false,
+    responseStream: false,
+    requestType: planbook_pb.GetPlansPlanbookForBusinessRequest,
+    responseType: planbook_pb.GetPlansPlanbookForBusinessResponse,
+    requestSerialize: serialize_planbook_GetPlansPlanbookForBusinessRequest,
+    requestDeserialize: deserialize_planbook_GetPlansPlanbookForBusinessRequest,
+    responseSerialize: serialize_planbook_GetPlansPlanbookForBusinessResponse,
+    responseDeserialize: deserialize_planbook_GetPlansPlanbookForBusinessResponse,
   },
 };
 

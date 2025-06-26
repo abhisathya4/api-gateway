@@ -17,6 +17,7 @@ interface ICustomerServiceService extends grpc.ServiceDefinition<grpc.UntypedSer
     getCustomer: ICustomerServiceService_IGetCustomer;
     getCustomers: ICustomerServiceService_IGetCustomers;
     restoreCustomerPlan: ICustomerServiceService_IRestoreCustomerPlan;
+    getCustomersWithPlanBusinessAndPlanbookInfo: ICustomerServiceService_IGetCustomersWithPlanBusinessAndPlanbookInfo;
 }
 
 interface ICustomerServiceService_ICreateCustomer extends grpc.MethodDefinition<customers_pb.CreateCustomerRequest, customers_pb.CreateCustomerResponse> {
@@ -73,6 +74,15 @@ interface ICustomerServiceService_IRestoreCustomerPlan extends grpc.MethodDefini
     responseSerialize: grpc.serialize<customers_pb.RestoreCustomerPlanResponse>;
     responseDeserialize: grpc.deserialize<customers_pb.RestoreCustomerPlanResponse>;
 }
+interface ICustomerServiceService_IGetCustomersWithPlanBusinessAndPlanbookInfo extends grpc.MethodDefinition<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse> {
+    path: "/customers.CustomerService/GetCustomersWithPlanBusinessAndPlanbookInfo";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest>;
+    requestDeserialize: grpc.deserialize<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest>;
+    responseSerialize: grpc.serialize<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse>;
+    responseDeserialize: grpc.deserialize<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse>;
+}
 
 export const CustomerServiceService: ICustomerServiceService;
 
@@ -83,6 +93,7 @@ export interface ICustomerServiceServer extends grpc.UntypedServiceImplementatio
     getCustomer: grpc.handleUnaryCall<customers_pb.GetCustomerRequest, customers_pb.GetCustomerResponse>;
     getCustomers: grpc.handleUnaryCall<customers_pb.GetCustomersRequest, customers_pb.GetCustomersResponse>;
     restoreCustomerPlan: grpc.handleUnaryCall<customers_pb.RestoreCustomerPlanRequest, customers_pb.RestoreCustomerPlanResponse>;
+    getCustomersWithPlanBusinessAndPlanbookInfo: grpc.handleUnaryCall<customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse>;
 }
 
 export interface ICustomerServiceClient {
@@ -104,6 +115,9 @@ export interface ICustomerServiceClient {
     restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
     restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
     restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
+    getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
+    getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
+    getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class CustomerServiceClient extends grpc.Client implements ICustomerServiceClient {
@@ -126,4 +140,7 @@ export class CustomerServiceClient extends grpc.Client implements ICustomerServi
     public restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
     public restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
     public restoreCustomerPlan(request: customers_pb.RestoreCustomerPlanRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: customers_pb.RestoreCustomerPlanResponse) => void): grpc.ClientUnaryCall;
+    public getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
+    public getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
+    public getCustomersWithPlanBusinessAndPlanbookInfo(request: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse) => void): grpc.ClientUnaryCall;
 }

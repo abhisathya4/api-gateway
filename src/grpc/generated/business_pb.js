@@ -260,7 +260,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.business.GetBusinessesRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.business.GetBusinessesRequest.repeatedFields_, null);
 };
 goog.inherits(proto.business.GetBusinessesRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -2570,6 +2570,13 @@ proto.business.GetBusinessResponse.prototype.clearBusinessesList = function() {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.business.GetBusinessesRequest.repeatedFields_ = [5,6];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2603,7 +2610,10 @@ proto.business.GetBusinessesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     authContext: (f = msg.getAuthContext()) && common_pb.AuthContext.toObject(includeInstance, f),
     limit: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    offset: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    offset: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    search: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    typeList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
+    billingTypeList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2653,6 +2663,18 @@ proto.business.GetBusinessesRequest.deserializeBinaryFromReader = function(msg, 
       var value = /** @type {number} */ (reader.readInt32());
       msg.setOffset(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSearch(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addType(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBillingType(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2701,6 +2723,27 @@ proto.business.GetBusinessesRequest.serializeBinaryToWriter = function(message, 
   if (f !== 0) {
     writer.writeInt32(
       3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getTypeList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      5,
+      f
+    );
+  }
+  f = message.getBillingTypeList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
       f
     );
   }
@@ -2777,6 +2820,116 @@ proto.business.GetBusinessesRequest.prototype.getOffset = function() {
  */
 proto.business.GetBusinessesRequest.prototype.setOffset = function(value) {
   return jspb.Message.setProto3IntField(this, 3, value);
+};
+
+
+/**
+ * optional string search = 4;
+ * @return {string}
+ */
+proto.business.GetBusinessesRequest.prototype.getSearch = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.setSearch = function(value) {
+  return jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.clearSearch = function() {
+  return jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.business.GetBusinessesRequest.prototype.hasSearch = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * repeated string type = 5;
+ * @return {!Array<string>}
+ */
+proto.business.GetBusinessesRequest.prototype.getTypeList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 5));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.setTypeList = function(value) {
+  return jspb.Message.setField(this, 5, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.addType = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 5, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.clearTypeList = function() {
+  return this.setTypeList([]);
+};
+
+
+/**
+ * repeated string billing_type = 6;
+ * @return {!Array<string>}
+ */
+proto.business.GetBusinessesRequest.prototype.getBillingTypeList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.setBillingTypeList = function(value) {
+  return jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.addBillingType = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.business.GetBusinessesRequest} returns this
+ */
+proto.business.GetBusinessesRequest.prototype.clearBillingTypeList = function() {
+  return this.setBillingTypeList([]);
 };
 
 
