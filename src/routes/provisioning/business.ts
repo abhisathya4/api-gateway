@@ -229,7 +229,7 @@ export const businessRoutes = new Hono()
         businessParams.setName(requestData.business_params.name);
         businessParams.setType(requestData.business_params.type);
         businessParams.setBillingType(requestData.business_params.billing_type);
-        businessParams.setTenantId(requestData.business_params.tenant_id);
+        businessParams.setTenantId(tenantId);
 
         grpcRequest.setBusinessParams(businessParams);
 
@@ -248,13 +248,13 @@ export const businessRoutes = new Hono()
             .getBusinessesList()
             .map((business) => business.toObject());
 
-          const responseData = {
-            created_business: businesses.map((business) => ({
+          const responseData: z.infer<typeof createBusinessResponseSchema> = {
+            businesses: businesses.map((business) => ({
               id: business.id,
               name: business.name,
               type: business.type,
               billing_type: business.billingType,
-              tenant_id: business.tenantId,
+              tenant_id: tenantId,
             })),
           };
 
