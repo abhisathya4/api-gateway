@@ -1,8 +1,5 @@
 # deps
 node_modules/
 
-# lambda
-lambda
-
 # environment variables
 .env
