@@ -13,9 +13,17 @@ import { env } from "../config/env";
 export class GrpcClient {
   private static instance: GrpcClient;
   private clients: Map<string, any>;
+  private address: string;
+  private credentials: grpc.ChannelCredentials;
 
   private constructor() {
     this.clients = new Map();
+
+    // Configure for your ALB
+    this.address = this.getGrpcAddress();
+    this.credentials = this.getCredentials();
+
+    console.log(`gRPC Client configured for: ${this.address}`);
   }
 
   public static getInstance(): GrpcClient {
@@ -25,19 +33,40 @@ export class GrpcClient {
     return GrpcClient.instance;
   }
 
+  private getGrpcAddress(): string {
+    // Use environment variable or default to ALB domain
+    if (env.GRPC_SERVER_ADDRESS) {
+      return env.GRPC_SERVER_ADDRESS;
+    }
+
+    // Default based on environment
+    if (env.NODE_ENV === "prod") {
+      return "grpc.nucleus-cloud.in:50051"; // Your ALB domain with gRPC port
+    }
+
+    return "localhost:50051"; // Local development
+  }
+
+  private getCredentials(): grpc.ChannelCredentials {
+    // Use SSL for production ALB, insecure for local
+    if (
+      env.NODE_ENV === "prod" ||
+      this.address.includes("nucleus-cloud.in")
+    ) {
+      return grpc.credentials.createSsl();
+    }
+    return grpc.credentials.createInsecure();
+  }
+
   private getClient<T>(
     name: string,
     ClientClass: new (
       address: string,
       credentials: grpc.ChannelCredentials
-    ) => T,
-    address: string = env.GRPC_SERVER_ADDRESS || "localhost:50051"
+    ) => T
   ): T {
     if (!this.clients.has(name)) {
-      this.clients.set(
-        name,
-        new ClientClass(address, grpc.credentials.createInsecure())
-      );
+      this.clients.set(name, new ClientClass(this.address, this.credentials));
     }
     return this.clients.get(name) as T;
   }

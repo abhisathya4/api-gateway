@@ -15,6 +15,10 @@ import { businessRoutes } from "./provisioning/business";
 import { nasRoutes } from "./provisioning/nas";
 import { activeSessionsRoutes } from "./provisioning/active-sessions";
 import authMiddleware from "@/lib/middleware/auth";
+import { env } from "../config/env";
+
+const hostname = env.NODE_ENV === "prod" ? "0.0.0.0" : "localhost";
+const port = env.NODE_ENV === "prod" ? 3000 : 3001;
 
 export const app = new Hono();
 
@@ -37,9 +41,8 @@ const apiRoutes = app
   .route("/businesses", businessRoutes)
   .route("/nas", nasRoutes)
   .route("/plans", planRoutes)
-  .route("/planbook", planbookRoutes);
-
-app.get("/health", (c) => c.text("OK", 200));
+  .route("/planbook", planbookRoutes)
+  .get("/health", (c) => c.text("OK", 200));
 
 // Open API spec
 app
@@ -53,7 +56,9 @@ app
           description: "Auto-generated API documentation.",
         },
         servers: [
-          { url: "http://localhost:3001", description: "Local Server" },
+          { url: `http://localhost:3000`, description: "Dev Server" },
+          { url: `http://localhost:3001`, description: "Backup Dev Server" },
+          { url: `https://api.nucleus-cloud.in`, description: "Prod Server" },
         ],
         security: [{ bearerAuth: [] }],
         components: {
