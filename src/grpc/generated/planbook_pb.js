@@ -459,7 +459,8 @@ proto.planbook.Planbook.toObject = function(includeInstance, msg) {
     period: jspb.Message.getFieldWithDefault(msg, 4, ""),
     price: jspb.Message.getFieldWithDefault(msg, 5, ""),
     groupname: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 7, "")
+    billingType: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    tenantId: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -521,6 +522,10 @@ proto.planbook.Planbook.deserializeBinaryFromReader = function(msg, reader) {
       msg.setGroupname(value);
       break;
     case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setBillingType(value);
+      break;
+    case 8:
       var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
@@ -595,10 +600,17 @@ proto.planbook.Planbook.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getTenantId();
+  f = message.getBillingType();
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getTenantId();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
       f
     );
   }
@@ -714,10 +726,10 @@ proto.planbook.Planbook.prototype.setGroupname = function(value) {
 
 
 /**
- * optional string tenant_id = 7;
+ * optional string billing_type = 7;
  * @return {string}
  */
-proto.planbook.Planbook.prototype.getTenantId = function() {
+proto.planbook.Planbook.prototype.getBillingType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
@@ -726,8 +738,26 @@ proto.planbook.Planbook.prototype.getTenantId = function() {
  * @param {string} value
  * @return {!proto.planbook.Planbook} returns this
  */
-proto.planbook.Planbook.prototype.setTenantId = function(value) {
+proto.planbook.Planbook.prototype.setBillingType = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional string tenant_id = 8;
+ * @return {string}
+ */
+proto.planbook.Planbook.prototype.getTenantId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.Planbook} returns this
+ */
+proto.planbook.Planbook.prototype.setTenantId = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -776,7 +806,8 @@ proto.planbook.PlanbookDetails.toObject = function(includeInstance, msg) {
     period: jspb.Message.getFieldWithDefault(msg, 11, ""),
     price: jspb.Message.getFieldWithDefault(msg, 12, ""),
     groupname: jspb.Message.getFieldWithDefault(msg, 13, ""),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 14, "")
+    billingType: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    tenantId: jspb.Message.getFieldWithDefault(msg, 15, "")
   };
 
   if (includeInstance) {
@@ -866,6 +897,10 @@ proto.planbook.PlanbookDetails.deserializeBinaryFromReader = function(msg, reade
       msg.setGroupname(value);
       break;
     case 14:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setBillingType(value);
+      break;
+    case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
@@ -989,10 +1024,17 @@ proto.planbook.PlanbookDetails.serializeBinaryToWriter = function(message, write
       f
     );
   }
-  f = message.getTenantId();
+  f = message.getBillingType();
   if (f.length > 0) {
     writer.writeString(
       14,
+      f
+    );
+  }
+  f = message.getTenantId();
+  if (f.length > 0) {
+    writer.writeString(
+      15,
       f
     );
   }
@@ -1234,10 +1276,10 @@ proto.planbook.PlanbookDetails.prototype.setGroupname = function(value) {
 
 
 /**
- * optional string tenant_id = 14;
+ * optional string billing_type = 14;
  * @return {string}
  */
-proto.planbook.PlanbookDetails.prototype.getTenantId = function() {
+proto.planbook.PlanbookDetails.prototype.getBillingType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
 };
 
@@ -1246,8 +1288,26 @@ proto.planbook.PlanbookDetails.prototype.getTenantId = function() {
  * @param {string} value
  * @return {!proto.planbook.PlanbookDetails} returns this
  */
-proto.planbook.PlanbookDetails.prototype.setTenantId = function(value) {
+proto.planbook.PlanbookDetails.prototype.setBillingType = function(value) {
   return jspb.Message.setProto3StringField(this, 14, value);
+};
+
+
+/**
+ * optional string tenant_id = 15;
+ * @return {string}
+ */
+proto.planbook.PlanbookDetails.prototype.getTenantId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.PlanbookDetails} returns this
+ */
+proto.planbook.PlanbookDetails.prototype.setTenantId = function(value) {
+  return jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
@@ -1412,9 +1472,10 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.toObject = functio
 proto.planbook.CreatePlanbookRequest.PlanbookParams.toObject = function(includeInstance, msg) {
   var f, obj = {
     planId: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    businessId: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    price: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
-    period: jspb.Message.getFieldWithDefault(msg, 4, "")
+    billingType: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    businessId: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    price: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
+    period: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -1457,13 +1518,17 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.deserializeBinaryFromReader 
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setBusinessId(value);
+      msg.setBillingType(value);
       break;
     case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setBusinessId(value);
+      break;
+    case 4:
       var value = /** @type {number} */ (reader.readDouble());
       msg.setPrice(value);
       break;
-    case 4:
+    case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setPeriod(value);
       break;
@@ -1503,24 +1568,31 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.serializeBinaryToWriter = fu
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 2));
-  if (f != null) {
+  f = message.getBillingType();
+  if (f.length > 0) {
     writer.writeString(
       2,
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
   if (f != null) {
-    writer.writeDouble(
+    writer.writeString(
       3,
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeDouble(
+      4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
   if (f != null) {
     writer.writeString(
-      4,
+      5,
       f
     );
   }
@@ -1546,10 +1618,10 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPlanId = functi
 
 
 /**
- * optional string business_id = 2;
+ * optional string billing_type = 2;
  * @return {string}
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getBusinessId = function() {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getBillingType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -1558,43 +1630,25 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getBusinessId = fu
  * @param {string} value
  * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
  */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setBillingType = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string business_id = 3;
+ * @return {string}
+ */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getBusinessId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
+ */
 proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setBusinessId = function(value) {
-  return jspb.Message.setField(this, 2, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
- */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearBusinessId = function() {
-  return jspb.Message.setField(this, 2, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasBusinessId = function() {
-  return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional double price = 3;
- * @return {number}
- */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getPrice = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 3, 0.0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
- */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPrice = function(value) {
   return jspb.Message.setField(this, 3, value);
 };
 
@@ -1603,7 +1657,7 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPrice = functio
  * Clears the field making it undefined.
  * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPrice = function() {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearBusinessId = function() {
   return jspb.Message.setField(this, 3, undefined);
 };
 
@@ -1612,25 +1666,25 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPrice = funct
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasPrice = function() {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasBusinessId = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 
 
 /**
- * optional string period = 4;
- * @return {string}
+ * optional double price = 4;
+ * @return {number}
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getPeriod = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getPrice = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 4, 0.0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPeriod = function(value) {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPrice = function(value) {
   return jspb.Message.setField(this, 4, value);
 };
 
@@ -1639,7 +1693,7 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPeriod = functi
  * Clears the field making it undefined.
  * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPeriod = function() {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPrice = function() {
   return jspb.Message.setField(this, 4, undefined);
 };
 
@@ -1648,8 +1702,44 @@ proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPeriod = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasPeriod = function() {
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasPrice = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional string period = 5;
+ * @return {string}
+ */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.getPeriod = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
+ */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.setPeriod = function(value) {
+  return jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.planbook.CreatePlanbookRequest.PlanbookParams} returns this
+ */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.clearPeriod = function() {
+  return jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.planbook.CreatePlanbookRequest.PlanbookParams.prototype.hasPeriod = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
@@ -2113,7 +2203,8 @@ proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.toObject = functio
 proto.planbook.UpdatePlanbookRequest.PlanbookParams.toObject = function(includeInstance, msg) {
   var f, obj = {
     price: jspb.Message.getFloatingPointFieldWithDefault(msg, 1, 0.0),
-    period: jspb.Message.getFieldWithDefault(msg, 2, "")
+    period: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    billingType: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -2158,6 +2249,10 @@ proto.planbook.UpdatePlanbookRequest.PlanbookParams.deserializeBinaryFromReader 
       var value = /** @type {string} */ (reader.readString());
       msg.setPeriod(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setBillingType(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2198,6 +2293,13 @@ proto.planbook.UpdatePlanbookRequest.PlanbookParams.serializeBinaryToWriter = fu
   if (f != null) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
       f
     );
   }
@@ -2273,6 +2375,42 @@ proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.clearPeriod = func
  */
 proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.hasPeriod = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string billing_type = 3;
+ * @return {string}
+ */
+proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.getBillingType = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.UpdatePlanbookRequest.PlanbookParams} returns this
+ */
+proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.setBillingType = function(value) {
+  return jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.planbook.UpdatePlanbookRequest.PlanbookParams} returns this
+ */
+proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.clearBillingType = function() {
+  return jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.planbook.UpdatePlanbookRequest.PlanbookParams.prototype.hasBillingType = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -2875,7 +3013,7 @@ proto.planbook.GetPlanbookResponse.prototype.clearPlanbooksList = function() {
  * @private {!Array<number>}
  * @const
  */
-proto.planbook.GetPlanbooksRequest.repeatedFields_ = [5,6,7];
+proto.planbook.GetPlanbooksRequest.repeatedFields_ = [5,6,7,8];
 
 
 
@@ -2914,7 +3052,8 @@ proto.planbook.GetPlanbooksRequest.toObject = function(includeInstance, msg) {
     search: jspb.Message.getFieldWithDefault(msg, 4, ""),
     planTypesList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
     businessIdsList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-    planIdsList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f
+    planIdsList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    billingTypesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2979,6 +3118,10 @@ proto.planbook.GetPlanbooksRequest.deserializeBinaryFromReader = function(msg, r
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.addPlanIds(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBillingTypes(value);
       break;
     default:
       reader.skipField();
@@ -3056,6 +3199,13 @@ proto.planbook.GetPlanbooksRequest.serializeBinaryToWriter = function(message, w
   if (f.length > 0) {
     writer.writeRepeatedString(
       7,
+      f
+    );
+  }
+  f = message.getBillingTypesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      8,
       f
     );
   }
@@ -3279,6 +3429,43 @@ proto.planbook.GetPlanbooksRequest.prototype.addPlanIds = function(value, opt_in
  */
 proto.planbook.GetPlanbooksRequest.prototype.clearPlanIdsList = function() {
   return this.setPlanIdsList([]);
+};
+
+
+/**
+ * repeated string billing_types = 8;
+ * @return {!Array<string>}
+ */
+proto.planbook.GetPlanbooksRequest.prototype.getBillingTypesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 8));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.planbook.GetPlanbooksRequest} returns this
+ */
+proto.planbook.GetPlanbooksRequest.prototype.setBillingTypesList = function(value) {
+  return jspb.Message.setField(this, 8, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.planbook.GetPlanbooksRequest} returns this
+ */
+proto.planbook.GetPlanbooksRequest.prototype.addBillingTypes = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.planbook.GetPlanbooksRequest} returns this
+ */
+proto.planbook.GetPlanbooksRequest.prototype.clearBillingTypesList = function() {
+  return this.setBillingTypesList([]);
 };
 
 
@@ -4509,11 +4696,12 @@ proto.planbook.PlansPlanbookForBusiness.toObject = function(includeInstance, msg
     isPostFup: jspb.Message.getBooleanFieldWithDefault(msg, 7, false),
     dataLimit: jspb.Message.getFieldWithDefault(msg, 8, ""),
     type: jspb.Message.getFieldWithDefault(msg, 9, ""),
-    price: jspb.Message.getFieldWithDefault(msg, 10, ""),
-    period: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    customerCount: jspb.Message.getFieldWithDefault(msg, 12, 0),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 13, ""),
-    planId: jspb.Message.getFieldWithDefault(msg, 14, "")
+    billingType: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    price: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    period: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    customerCount: jspb.Message.getFieldWithDefault(msg, 13, 0),
+    tenantId: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    planId: jspb.Message.getFieldWithDefault(msg, 15, "")
   };
 
   if (includeInstance) {
@@ -4588,21 +4776,25 @@ proto.planbook.PlansPlanbookForBusiness.deserializeBinaryFromReader = function(m
       break;
     case 10:
       var value = /** @type {string} */ (reader.readString());
-      msg.setPrice(value);
+      msg.setBillingType(value);
       break;
     case 11:
       var value = /** @type {string} */ (reader.readString());
-      msg.setPeriod(value);
+      msg.setPrice(value);
       break;
     case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPeriod(value);
+      break;
+    case 13:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setCustomerCount(value);
       break;
-    case 13:
+    case 14:
       var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
-    case 14:
+    case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setPlanId(value);
       break;
@@ -4698,38 +4890,45 @@ proto.planbook.PlansPlanbookForBusiness.serializeBinaryToWriter = function(messa
       f
     );
   }
-  f = message.getPrice();
+  f = message.getBillingType();
   if (f.length > 0) {
     writer.writeString(
       10,
       f
     );
   }
-  f = message.getPeriod();
+  f = message.getPrice();
   if (f.length > 0) {
     writer.writeString(
       11,
       f
     );
   }
+  f = message.getPeriod();
+  if (f.length > 0) {
+    writer.writeString(
+      12,
+      f
+    );
+  }
   f = message.getCustomerCount();
   if (f !== 0) {
     writer.writeInt32(
-      12,
+      13,
       f
     );
   }
   f = message.getTenantId();
   if (f.length > 0) {
     writer.writeString(
-      13,
+      14,
       f
     );
   }
   f = message.getPlanId();
   if (f.length > 0) {
     writer.writeString(
-      14,
+      15,
       f
     );
   }
@@ -4917,10 +5116,10 @@ proto.planbook.PlansPlanbookForBusiness.prototype.setType = function(value) {
 
 
 /**
- * optional string price = 10;
+ * optional string billing_type = 10;
  * @return {string}
  */
-proto.planbook.PlansPlanbookForBusiness.prototype.getPrice = function() {
+proto.planbook.PlansPlanbookForBusiness.prototype.getBillingType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
 };
 
@@ -4929,16 +5128,16 @@ proto.planbook.PlansPlanbookForBusiness.prototype.getPrice = function() {
  * @param {string} value
  * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
  */
-proto.planbook.PlansPlanbookForBusiness.prototype.setPrice = function(value) {
+proto.planbook.PlansPlanbookForBusiness.prototype.setBillingType = function(value) {
   return jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
 /**
- * optional string period = 11;
+ * optional string price = 11;
  * @return {string}
  */
-proto.planbook.PlansPlanbookForBusiness.prototype.getPeriod = function() {
+proto.planbook.PlansPlanbookForBusiness.prototype.getPrice = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
 };
 
@@ -4947,17 +5146,35 @@ proto.planbook.PlansPlanbookForBusiness.prototype.getPeriod = function() {
  * @param {string} value
  * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
  */
-proto.planbook.PlansPlanbookForBusiness.prototype.setPeriod = function(value) {
+proto.planbook.PlansPlanbookForBusiness.prototype.setPrice = function(value) {
   return jspb.Message.setProto3StringField(this, 11, value);
 };
 
 
 /**
- * optional int32 customer_count = 12;
+ * optional string period = 12;
+ * @return {string}
+ */
+proto.planbook.PlansPlanbookForBusiness.prototype.getPeriod = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
+ */
+proto.planbook.PlansPlanbookForBusiness.prototype.setPeriod = function(value) {
+  return jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * optional int32 customer_count = 13;
  * @return {number}
  */
 proto.planbook.PlansPlanbookForBusiness.prototype.getCustomerCount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
 };
 
 
@@ -4966,33 +5183,15 @@ proto.planbook.PlansPlanbookForBusiness.prototype.getCustomerCount = function() 
  * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
  */
 proto.planbook.PlansPlanbookForBusiness.prototype.setCustomerCount = function(value) {
-  return jspb.Message.setProto3IntField(this, 12, value);
+  return jspb.Message.setProto3IntField(this, 13, value);
 };
 
 
 /**
- * optional string tenant_id = 13;
+ * optional string tenant_id = 14;
  * @return {string}
  */
 proto.planbook.PlansPlanbookForBusiness.prototype.getTenantId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
- */
-proto.planbook.PlansPlanbookForBusiness.prototype.setTenantId = function(value) {
-  return jspb.Message.setProto3StringField(this, 13, value);
-};
-
-
-/**
- * optional string plan_id = 14;
- * @return {string}
- */
-proto.planbook.PlansPlanbookForBusiness.prototype.getPlanId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
 };
 
@@ -5001,8 +5200,26 @@ proto.planbook.PlansPlanbookForBusiness.prototype.getPlanId = function() {
  * @param {string} value
  * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
  */
-proto.planbook.PlansPlanbookForBusiness.prototype.setPlanId = function(value) {
+proto.planbook.PlansPlanbookForBusiness.prototype.setTenantId = function(value) {
   return jspb.Message.setProto3StringField(this, 14, value);
+};
+
+
+/**
+ * optional string plan_id = 15;
+ * @return {string}
+ */
+proto.planbook.PlansPlanbookForBusiness.prototype.getPlanId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.planbook.PlansPlanbookForBusiness} returns this
+ */
+proto.planbook.PlansPlanbookForBusiness.prototype.setPlanId = function(value) {
+  return jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
@@ -5012,7 +5229,7 @@ proto.planbook.PlansPlanbookForBusiness.prototype.setPlanId = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.planbook.GetPlansPlanbookForBusinessRequest.repeatedFields_ = [5];
+proto.planbook.GetPlansPlanbookForBusinessRequest.repeatedFields_ = [5,6];
 
 
 
@@ -5050,7 +5267,8 @@ proto.planbook.GetPlansPlanbookForBusinessRequest.toObject = function(includeIns
     offset: jspb.Message.getFieldWithDefault(msg, 3, 0),
     search: jspb.Message.getFieldWithDefault(msg, 4, ""),
     typesList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
-    businessId: jspb.Message.getFieldWithDefault(msg, 6, "")
+    billingTypesList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    businessId: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -5109,6 +5327,10 @@ proto.planbook.GetPlansPlanbookForBusinessRequest.deserializeBinaryFromReader = 
       msg.addTypes(value);
       break;
     case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBillingTypes(value);
+      break;
+    case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setBusinessId(value);
       break;
@@ -5177,10 +5399,17 @@ proto.planbook.GetPlansPlanbookForBusinessRequest.serializeBinaryToWriter = func
       f
     );
   }
+  f = message.getBillingTypesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
+      f
+    );
+  }
   f = message.getBusinessId();
   if (f.length > 0) {
     writer.writeString(
-      6,
+      7,
       f
     );
   }
@@ -5316,11 +5545,48 @@ proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.clearTypesList = fun
 
 
 /**
- * optional string business_id = 6;
+ * repeated string billing_types = 6;
+ * @return {!Array<string>}
+ */
+proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.getBillingTypesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.planbook.GetPlansPlanbookForBusinessRequest} returns this
+ */
+proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.setBillingTypesList = function(value) {
+  return jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.planbook.GetPlansPlanbookForBusinessRequest} returns this
+ */
+proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.addBillingTypes = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.planbook.GetPlansPlanbookForBusinessRequest} returns this
+ */
+proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.clearBillingTypesList = function() {
+  return this.setBillingTypesList([]);
+};
+
+
+/**
+ * optional string business_id = 7;
  * @return {string}
  */
 proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.getBusinessId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
@@ -5329,7 +5595,7 @@ proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.getBusinessId = func
  * @return {!proto.planbook.GetPlansPlanbookForBusinessRequest} returns this
  */
 proto.planbook.GetPlansPlanbookForBusinessRequest.prototype.setBusinessId = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
+  return jspb.Message.setProto3StringField(this, 7, value);
 };
 
 

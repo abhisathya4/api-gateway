@@ -453,8 +453,7 @@ proto.business.CreateBusinessRequest.BusinessParams.toObject = function(includeI
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
     type: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    billingType: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 4, "")
+    tenantId: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -501,10 +500,6 @@ proto.business.CreateBusinessRequest.BusinessParams.deserializeBinaryFromReader 
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setBillingType(value);
-      break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
     default:
@@ -550,17 +545,10 @@ proto.business.CreateBusinessRequest.BusinessParams.serializeBinaryToWriter = fu
       f
     );
   }
-  f = message.getBillingType();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
-      f
-    );
-  }
   f = message.getTenantId();
   if (f.length > 0) {
     writer.writeString(
-      4,
+      3,
       f
     );
   }
@@ -604,10 +592,10 @@ proto.business.CreateBusinessRequest.BusinessParams.prototype.setType = function
 
 
 /**
- * optional string billing_type = 3;
+ * optional string tenant_id = 3;
  * @return {string}
  */
-proto.business.CreateBusinessRequest.BusinessParams.prototype.getBillingType = function() {
+proto.business.CreateBusinessRequest.BusinessParams.prototype.getTenantId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -616,26 +604,8 @@ proto.business.CreateBusinessRequest.BusinessParams.prototype.getBillingType = f
  * @param {string} value
  * @return {!proto.business.CreateBusinessRequest.BusinessParams} returns this
  */
-proto.business.CreateBusinessRequest.BusinessParams.prototype.setBillingType = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional string tenant_id = 4;
- * @return {string}
- */
-proto.business.CreateBusinessRequest.BusinessParams.prototype.getTenantId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.business.CreateBusinessRequest.BusinessParams} returns this
- */
 proto.business.CreateBusinessRequest.BusinessParams.prototype.setTenantId = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -748,8 +718,7 @@ proto.business.Business.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     type: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    billingType: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 5, "")
+    tenantId: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -799,10 +768,6 @@ proto.business.Business.deserializeBinaryFromReader = function(msg, reader) {
       msg.setType(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setBillingType(value);
-      break;
-    case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
@@ -856,17 +821,10 @@ proto.business.Business.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getBillingType();
-  if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
   f = message.getTenantId();
   if (f.length > 0) {
     writer.writeString(
-      5,
+      4,
       f
     );
   }
@@ -928,10 +886,10 @@ proto.business.Business.prototype.setType = function(value) {
 
 
 /**
- * optional string billing_type = 4;
+ * optional string tenant_id = 4;
  * @return {string}
  */
-proto.business.Business.prototype.getBillingType = function() {
+proto.business.Business.prototype.getTenantId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -940,26 +898,8 @@ proto.business.Business.prototype.getBillingType = function() {
  * @param {string} value
  * @return {!proto.business.Business} returns this
  */
-proto.business.Business.prototype.setBillingType = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
-};
-
-
-/**
- * optional string tenant_id = 5;
- * @return {string}
- */
-proto.business.Business.prototype.getTenantId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.business.Business} returns this
- */
 proto.business.Business.prototype.setTenantId = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -998,10 +938,9 @@ proto.business.BusinessWithCounts.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     type: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    billingType: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    customerCount: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    planbookCount: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    tenantId: jspb.Message.getFieldWithDefault(msg, 7, "")
+    customerCount: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    planbookCount: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    tenantId: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -1051,18 +990,14 @@ proto.business.BusinessWithCounts.deserializeBinaryFromReader = function(msg, re
       msg.setType(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setBillingType(value);
-      break;
-    case 5:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setCustomerCount(value);
       break;
-    case 6:
+    case 5:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setPlanbookCount(value);
       break;
-    case 7:
+    case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setTenantId(value);
       break;
@@ -1116,31 +1051,24 @@ proto.business.BusinessWithCounts.serializeBinaryToWriter = function(message, wr
       f
     );
   }
-  f = message.getBillingType();
-  if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
   f = message.getCustomerCount();
   if (f !== 0) {
     writer.writeInt32(
-      5,
+      4,
       f
     );
   }
   f = message.getPlanbookCount();
   if (f !== 0) {
     writer.writeInt32(
-      6,
+      5,
       f
     );
   }
   f = message.getTenantId();
   if (f.length > 0) {
     writer.writeString(
-      7,
+      6,
       f
     );
   }
@@ -1202,29 +1130,11 @@ proto.business.BusinessWithCounts.prototype.setType = function(value) {
 
 
 /**
- * optional string billing_type = 4;
- * @return {string}
- */
-proto.business.BusinessWithCounts.prototype.getBillingType = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.business.BusinessWithCounts} returns this
- */
-proto.business.BusinessWithCounts.prototype.setBillingType = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
-};
-
-
-/**
- * optional int32 customer_count = 5;
+ * optional int32 customer_count = 4;
  * @return {number}
  */
 proto.business.BusinessWithCounts.prototype.getCustomerCount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
@@ -1233,16 +1143,16 @@ proto.business.BusinessWithCounts.prototype.getCustomerCount = function() {
  * @return {!proto.business.BusinessWithCounts} returns this
  */
 proto.business.BusinessWithCounts.prototype.setCustomerCount = function(value) {
-  return jspb.Message.setProto3IntField(this, 5, value);
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
 /**
- * optional int32 planbook_count = 6;
+ * optional int32 planbook_count = 5;
  * @return {number}
  */
 proto.business.BusinessWithCounts.prototype.getPlanbookCount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
@@ -1251,16 +1161,16 @@ proto.business.BusinessWithCounts.prototype.getPlanbookCount = function() {
  * @return {!proto.business.BusinessWithCounts} returns this
  */
 proto.business.BusinessWithCounts.prototype.setPlanbookCount = function(value) {
-  return jspb.Message.setProto3IntField(this, 6, value);
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
 /**
- * optional string tenant_id = 7;
+ * optional string tenant_id = 6;
  * @return {string}
  */
 proto.business.BusinessWithCounts.prototype.getTenantId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
 };
 
 
@@ -1269,7 +1179,7 @@ proto.business.BusinessWithCounts.prototype.getTenantId = function() {
  * @return {!proto.business.BusinessWithCounts} returns this
  */
 proto.business.BusinessWithCounts.prototype.setTenantId = function(value) {
-  return jspb.Message.setProto3StringField(this, 7, value);
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
@@ -1606,8 +1516,7 @@ proto.business.UpdateBusinessRequest.BusinessParams.prototype.toObject = functio
 proto.business.UpdateBusinessRequest.BusinessParams.toObject = function(includeInstance, msg) {
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    type: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    billingType: jspb.Message.getFieldWithDefault(msg, 3, "")
+    type: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -1652,10 +1561,6 @@ proto.business.UpdateBusinessRequest.BusinessParams.deserializeBinaryFromReader 
       var value = /** @type {string} */ (reader.readString());
       msg.setType(value);
       break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setBillingType(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -1696,13 +1601,6 @@ proto.business.UpdateBusinessRequest.BusinessParams.serializeBinaryToWriter = fu
   if (f != null) {
     writer.writeString(
       2,
-      f
-    );
-  }
-  f = /** @type {string} */ (jspb.Message.getField(message, 3));
-  if (f != null) {
-    writer.writeString(
-      3,
       f
     );
   }
@@ -1778,42 +1676,6 @@ proto.business.UpdateBusinessRequest.BusinessParams.prototype.clearType = functi
  */
 proto.business.UpdateBusinessRequest.BusinessParams.prototype.hasType = function() {
   return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional string billing_type = 3;
- * @return {string}
- */
-proto.business.UpdateBusinessRequest.BusinessParams.prototype.getBillingType = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.business.UpdateBusinessRequest.BusinessParams} returns this
- */
-proto.business.UpdateBusinessRequest.BusinessParams.prototype.setBillingType = function(value) {
-  return jspb.Message.setField(this, 3, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.business.UpdateBusinessRequest.BusinessParams} returns this
- */
-proto.business.UpdateBusinessRequest.BusinessParams.prototype.clearBillingType = function() {
-  return jspb.Message.setField(this, 3, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.business.UpdateBusinessRequest.BusinessParams.prototype.hasBillingType = function() {
-  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -2575,7 +2437,7 @@ proto.business.GetBusinessResponse.prototype.clearBusinessesList = function() {
  * @private {!Array<number>}
  * @const
  */
-proto.business.GetBusinessesRequest.repeatedFields_ = [5,6];
+proto.business.GetBusinessesRequest.repeatedFields_ = [5];
 
 
 
@@ -2612,8 +2474,7 @@ proto.business.GetBusinessesRequest.toObject = function(includeInstance, msg) {
     limit: jspb.Message.getFieldWithDefault(msg, 2, 0),
     offset: jspb.Message.getFieldWithDefault(msg, 3, 0),
     search: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    typeList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
-    billingTypeList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f
+    typeList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2670,10 +2531,6 @@ proto.business.GetBusinessesRequest.deserializeBinaryFromReader = function(msg, 
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.addType(value);
-      break;
-    case 6:
-      var value = /** @type {string} */ (reader.readString());
-      msg.addBillingType(value);
       break;
     default:
       reader.skipField();
@@ -2737,13 +2594,6 @@ proto.business.GetBusinessesRequest.serializeBinaryToWriter = function(message, 
   if (f.length > 0) {
     writer.writeRepeatedString(
       5,
-      f
-    );
-  }
-  f = message.getBillingTypeList();
-  if (f.length > 0) {
-    writer.writeRepeatedString(
-      6,
       f
     );
   }
@@ -2893,43 +2743,6 @@ proto.business.GetBusinessesRequest.prototype.addType = function(value, opt_inde
  */
 proto.business.GetBusinessesRequest.prototype.clearTypeList = function() {
   return this.setTypeList([]);
-};
-
-
-/**
- * repeated string billing_type = 6;
- * @return {!Array<string>}
- */
-proto.business.GetBusinessesRequest.prototype.getBillingTypeList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.business.GetBusinessesRequest} returns this
- */
-proto.business.GetBusinessesRequest.prototype.setBillingTypeList = function(value) {
-  return jspb.Message.setField(this, 6, value || []);
-};
-
-
-/**
- * @param {string} value
- * @param {number=} opt_index
- * @return {!proto.business.GetBusinessesRequest} returns this
- */
-proto.business.GetBusinessesRequest.prototype.addBillingType = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.business.GetBusinessesRequest} returns this
- */
-proto.business.GetBusinessesRequest.prototype.clearBillingTypeList = function() {
-  return this.setBillingTypeList([]);
 };
 
 

@@ -43,8 +43,6 @@ export namespace CreateBusinessRequest {
         setName(value: string): BusinessParams;
         getType(): string;
         setType(value: string): BusinessParams;
-        getBillingType(): string;
-        setBillingType(value: string): BusinessParams;
         getTenantId(): string;
         setTenantId(value: string): BusinessParams;
 
@@ -62,7 +60,6 @@ export namespace CreateBusinessRequest {
         export type AsObject = {
             name: string,
             type: string,
-            billingType: string,
             tenantId: string,
         }
     }
@@ -76,8 +73,6 @@ export class Business extends jspb.Message {
     setName(value: string): Business;
     getType(): string;
     setType(value: string): Business;
-    getBillingType(): string;
-    setBillingType(value: string): Business;
     getTenantId(): string;
     setTenantId(value: string): Business;
 
@@ -96,7 +91,6 @@ export namespace Business {
         id: string,
         name: string,
         type: string,
-        billingType: string,
         tenantId: string,
     }
 }
@@ -108,8 +102,6 @@ export class BusinessWithCounts extends jspb.Message {
     setName(value: string): BusinessWithCounts;
     getType(): string;
     setType(value: string): BusinessWithCounts;
-    getBillingType(): string;
-    setBillingType(value: string): BusinessWithCounts;
     getCustomerCount(): number;
     setCustomerCount(value: number): BusinessWithCounts;
     getPlanbookCount(): number;
@@ -132,7 +124,6 @@ export namespace BusinessWithCounts {
         id: string,
         name: string,
         type: string,
-        billingType: string,
         customerCount: number,
         planbookCount: number,
         tenantId: string,
@@ -205,11 +196,6 @@ export namespace UpdateBusinessRequest {
         getType(): string | undefined;
         setType(value: string): BusinessParams;
 
-        hasBillingType(): boolean;
-        clearBillingType(): void;
-        getBillingType(): string | undefined;
-        setBillingType(value: string): BusinessParams;
-
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): BusinessParams.AsObject;
         static toObject(includeInstance: boolean, msg: BusinessParams): BusinessParams.AsObject;
@@ -224,7 +210,6 @@ export namespace UpdateBusinessRequest {
         export type AsObject = {
             name?: string,
             type?: string,
-            billingType?: string,
         }
     }
 
@@ -334,10 +319,6 @@ export class GetBusinessesRequest extends jspb.Message {
     getTypeList(): Array<string>;
     setTypeList(value: Array<string>): GetBusinessesRequest;
     addType(value: string, index?: number): string;
-    clearBillingTypeList(): void;
-    getBillingTypeList(): Array<string>;
-    setBillingTypeList(value: Array<string>): GetBusinessesRequest;
-    addBillingType(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetBusinessesRequest.AsObject;
@@ -356,7 +337,6 @@ export namespace GetBusinessesRequest {
         offset: number,
         search?: string,
         typeList: Array<string>,
-        billingTypeList: Array<string>,
     }
 }
 

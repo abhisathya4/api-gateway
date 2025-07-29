@@ -6,6 +6,7 @@
 
 import * as jspb from "google-protobuf";
 import * as common_pb from "./common_pb";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class RegisterNasDeviceRequest extends jspb.Message { 
 
@@ -66,6 +67,16 @@ export namespace RegisterNasDeviceRequest {
         getDescription(): string | undefined;
         setDescription(value: string): DeviceParams;
 
+        hasLocation(): boolean;
+        clearLocation(): void;
+        getLocation(): string | undefined;
+        setLocation(value: string): DeviceParams;
+
+        hasActive(): boolean;
+        clearActive(): void;
+        getActive(): boolean | undefined;
+        setActive(value: boolean): DeviceParams;
+
         hasRequireMa(): boolean;
         clearRequireMa(): void;
         getRequireMa(): string | undefined;
@@ -75,6 +86,11 @@ export namespace RegisterNasDeviceRequest {
         clearLimitProxyState(): void;
         getLimitProxyState(): string | undefined;
         setLimitProxyState(value: string): DeviceParams;
+
+        hasTenantId(): boolean;
+        clearTenantId(): void;
+        getTenantId(): string | undefined;
+        setTenantId(value: string): DeviceParams;
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): DeviceParams.AsObject;
@@ -96,8 +112,11 @@ export namespace RegisterNasDeviceRequest {
             server?: string,
             community?: string,
             description?: string,
+            location?: string,
+            active?: boolean,
             requireMa?: string,
             limitProxyState?: string,
+            tenantId?: string,
         }
     }
 
@@ -156,6 +175,16 @@ export namespace SysRegisterNasDeviceRequest {
         getDescription(): string | undefined;
         setDescription(value: string): DeviceParams;
 
+        hasLocation(): boolean;
+        clearLocation(): void;
+        getLocation(): string | undefined;
+        setLocation(value: string): DeviceParams;
+
+        hasActive(): boolean;
+        clearActive(): void;
+        getActive(): boolean | undefined;
+        setActive(value: boolean): DeviceParams;
+
         hasRequireMa(): boolean;
         clearRequireMa(): void;
         getRequireMa(): string | undefined;
@@ -165,8 +194,8 @@ export namespace SysRegisterNasDeviceRequest {
         clearLimitProxyState(): void;
         getLimitProxyState(): string | undefined;
         setLimitProxyState(value: string): DeviceParams;
-        getOrganizationId(): string;
-        setOrganizationId(value: string): DeviceParams;
+        getTenantId(): string;
+        setTenantId(value: string): DeviceParams;
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): DeviceParams.AsObject;
@@ -188,9 +217,11 @@ export namespace SysRegisterNasDeviceRequest {
             server?: string,
             community?: string,
             description?: string,
+            location?: string,
+            active?: boolean,
             requireMa?: string,
             limitProxyState?: string,
-            organizationId: string,
+            tenantId: string,
         }
     }
 
@@ -227,6 +258,21 @@ export class Nas extends jspb.Message {
     clearDescription(): void;
     getDescription(): string | undefined;
     setDescription(value: string): Nas;
+
+    hasLocation(): boolean;
+    clearLocation(): void;
+    getLocation(): string | undefined;
+    setLocation(value: string): Nas;
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): Nas;
+
+    hasLastSeen(): boolean;
+    clearLastSeen(): void;
+    getLastSeen(): google_protobuf_timestamp_pb.Timestamp | undefined;
+    setLastSeen(value?: google_protobuf_timestamp_pb.Timestamp): Nas;
     getRequireMa(): string;
     setRequireMa(value: string): Nas;
     getLimitProxyState(): string;
@@ -255,6 +301,9 @@ export namespace Nas {
         server?: string,
         community?: string,
         description?: string,
+        location?: string,
+        active?: boolean,
+        lastSeen?: google_protobuf_timestamp_pb.Timestamp.AsObject,
         requireMa: string,
         limitProxyState: string,
         tenantId: string,
@@ -280,5 +329,179 @@ export class RegisterNasDeviceResponse extends jspb.Message {
 export namespace RegisterNasDeviceResponse {
     export type AsObject = {
         nasDevicesList: Array<Nas.AsObject>,
+    }
+}
+
+export class NasWithDetails extends jspb.Message { 
+    getId(): string;
+    setId(value: string): NasWithDetails;
+    getNasname(): string;
+    setNasname(value: string): NasWithDetails;
+    getShortname(): string;
+    setShortname(value: string): NasWithDetails;
+    getType(): string;
+    setType(value: string): NasWithDetails;
+
+    hasPorts(): boolean;
+    clearPorts(): void;
+    getPorts(): number | undefined;
+    setPorts(value: number): NasWithDetails;
+    getSecret(): string;
+    setSecret(value: string): NasWithDetails;
+
+    hasServer(): boolean;
+    clearServer(): void;
+    getServer(): string | undefined;
+    setServer(value: string): NasWithDetails;
+
+    hasCommunity(): boolean;
+    clearCommunity(): void;
+    getCommunity(): string | undefined;
+    setCommunity(value: string): NasWithDetails;
+
+    hasDescription(): boolean;
+    clearDescription(): void;
+    getDescription(): string | undefined;
+    setDescription(value: string): NasWithDetails;
+
+    hasLocation(): boolean;
+    clearLocation(): void;
+    getLocation(): string | undefined;
+    setLocation(value: string): NasWithDetails;
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): NasWithDetails;
+
+    hasLastSeen(): boolean;
+    clearLastSeen(): void;
+    getLastSeen(): google_protobuf_timestamp_pb.Timestamp | undefined;
+    setLastSeen(value?: google_protobuf_timestamp_pb.Timestamp): NasWithDetails;
+    getRequireMa(): string;
+    setRequireMa(value: string): NasWithDetails;
+    getLimitProxyState(): string;
+    setLimitProxyState(value: string): NasWithDetails;
+    getTenantId(): string;
+    setTenantId(value: string): NasWithDetails;
+    getActiveSessions(): number;
+    setActiveSessions(value: number): NasWithDetails;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): NasWithDetails.AsObject;
+    static toObject(includeInstance: boolean, msg: NasWithDetails): NasWithDetails.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: NasWithDetails, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): NasWithDetails;
+    static deserializeBinaryFromReader(message: NasWithDetails, reader: jspb.BinaryReader): NasWithDetails;
+}
+
+export namespace NasWithDetails {
+    export type AsObject = {
+        id: string,
+        nasname: string,
+        shortname: string,
+        type: string,
+        ports?: number,
+        secret: string,
+        server?: string,
+        community?: string,
+        description?: string,
+        location?: string,
+        active?: boolean,
+        lastSeen?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+        requireMa: string,
+        limitProxyState: string,
+        tenantId: string,
+        activeSessions: number,
+    }
+}
+
+export class GetNasDevicesRequest extends jspb.Message { 
+
+    hasAuthContext(): boolean;
+    clearAuthContext(): void;
+    getAuthContext(): common_pb.AuthContext | undefined;
+    setAuthContext(value?: common_pb.AuthContext): GetNasDevicesRequest;
+    getLimit(): number;
+    setLimit(value: number): GetNasDevicesRequest;
+    getOffset(): number;
+    setOffset(value: number): GetNasDevicesRequest;
+
+    hasSearch(): boolean;
+    clearSearch(): void;
+    getSearch(): string | undefined;
+    setSearch(value: string): GetNasDevicesRequest;
+    clearTypesList(): void;
+    getTypesList(): Array<string>;
+    setTypesList(value: Array<string>): GetNasDevicesRequest;
+    addTypes(value: string, index?: number): string;
+    clearLocationsList(): void;
+    getLocationsList(): Array<string>;
+    setLocationsList(value: Array<string>): GetNasDevicesRequest;
+    addLocations(value: string, index?: number): string;
+    clearServersList(): void;
+    getServersList(): Array<string>;
+    setServersList(value: Array<string>): GetNasDevicesRequest;
+    addServers(value: string, index?: number): string;
+    clearCommunitiesList(): void;
+    getCommunitiesList(): Array<string>;
+    setCommunitiesList(value: Array<string>): GetNasDevicesRequest;
+    addCommunities(value: string, index?: number): string;
+    clearStatusList(): void;
+    getStatusList(): Array<boolean>;
+    setStatusList(value: Array<boolean>): GetNasDevicesRequest;
+    addStatus(value: boolean, index?: number): boolean;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetNasDevicesRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetNasDevicesRequest): GetNasDevicesRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetNasDevicesRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetNasDevicesRequest;
+    static deserializeBinaryFromReader(message: GetNasDevicesRequest, reader: jspb.BinaryReader): GetNasDevicesRequest;
+}
+
+export namespace GetNasDevicesRequest {
+    export type AsObject = {
+        authContext?: common_pb.AuthContext.AsObject,
+        limit: number,
+        offset: number,
+        search?: string,
+        typesList: Array<string>,
+        locationsList: Array<string>,
+        serversList: Array<string>,
+        communitiesList: Array<string>,
+        statusList: Array<boolean>,
+    }
+}
+
+export class GetNasDevicesResponse extends jspb.Message { 
+    clearDataList(): void;
+    getDataList(): Array<NasWithDetails>;
+    setDataList(value: Array<NasWithDetails>): GetNasDevicesResponse;
+    addData(value?: NasWithDetails, index?: number): NasWithDetails;
+
+    hasMeta(): boolean;
+    clearMeta(): void;
+    getMeta(): common_pb.PaginationMeta | undefined;
+    setMeta(value?: common_pb.PaginationMeta): GetNasDevicesResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetNasDevicesResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: GetNasDevicesResponse): GetNasDevicesResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetNasDevicesResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetNasDevicesResponse;
+    static deserializeBinaryFromReader(message: GetNasDevicesResponse, reader: jspb.BinaryReader): GetNasDevicesResponse;
+}
+
+export namespace GetNasDevicesResponse {
+    export type AsObject = {
+        dataList: Array<NasWithDetails.AsObject>,
+        meta?: common_pb.PaginationMeta.AsObject,
     }
 }

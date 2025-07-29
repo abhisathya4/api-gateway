@@ -21,6 +21,8 @@ export class Planbook extends jspb.Message {
     setPrice(value: string): Planbook;
     getGroupname(): string;
     setGroupname(value: string): Planbook;
+    getBillingType(): string;
+    setBillingType(value: string): Planbook;
     getTenantId(): string;
     setTenantId(value: string): Planbook;
 
@@ -42,6 +44,7 @@ export namespace Planbook {
         period: string,
         price: string,
         groupname: string,
+        billingType: string,
         tenantId: string,
     }
 }
@@ -73,6 +76,8 @@ export class PlanbookDetails extends jspb.Message {
     setPrice(value: string): PlanbookDetails;
     getGroupname(): string;
     setGroupname(value: string): PlanbookDetails;
+    getBillingType(): string;
+    setBillingType(value: string): PlanbookDetails;
     getTenantId(): string;
     setTenantId(value: string): PlanbookDetails;
 
@@ -101,6 +106,7 @@ export namespace PlanbookDetails {
         period: string,
         price: string,
         groupname: string,
+        billingType: string,
         tenantId: string,
     }
 }
@@ -137,6 +143,8 @@ export namespace CreatePlanbookRequest {
     export class PlanbookParams extends jspb.Message { 
         getPlanId(): string;
         setPlanId(value: string): PlanbookParams;
+        getBillingType(): string;
+        setBillingType(value: string): PlanbookParams;
 
         hasBusinessId(): boolean;
         clearBusinessId(): void;
@@ -166,6 +174,7 @@ export namespace CreatePlanbookRequest {
     export namespace PlanbookParams {
         export type AsObject = {
             planId: string,
+            billingType: string,
             businessId?: string,
             price?: number,
             period?: string,
@@ -245,6 +254,11 @@ export namespace UpdatePlanbookRequest {
         getPeriod(): string | undefined;
         setPeriod(value: string): PlanbookParams;
 
+        hasBillingType(): boolean;
+        clearBillingType(): void;
+        getBillingType(): string | undefined;
+        setBillingType(value: string): PlanbookParams;
+
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): PlanbookParams.AsObject;
         static toObject(includeInstance: boolean, msg: PlanbookParams): PlanbookParams.AsObject;
@@ -259,6 +273,7 @@ export namespace UpdatePlanbookRequest {
         export type AsObject = {
             price?: number,
             period?: string,
+            billingType?: string,
         }
     }
 
@@ -361,6 +376,10 @@ export class GetPlanbooksRequest extends jspb.Message {
     getPlanIdsList(): Array<string>;
     setPlanIdsList(value: Array<string>): GetPlanbooksRequest;
     addPlanIds(value: string, index?: number): string;
+    clearBillingTypesList(): void;
+    getBillingTypesList(): Array<string>;
+    setBillingTypesList(value: Array<string>): GetPlanbooksRequest;
+    addBillingTypes(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetPlanbooksRequest.AsObject;
@@ -381,6 +400,7 @@ export namespace GetPlanbooksRequest {
         planTypesList: Array<string>,
         businessIdsList: Array<string>,
         planIdsList: Array<string>,
+        billingTypesList: Array<string>,
     }
 }
 
@@ -554,6 +574,8 @@ export class PlansPlanbookForBusiness extends jspb.Message {
     setDataLimit(value: string): PlansPlanbookForBusiness;
     getType(): string;
     setType(value: string): PlansPlanbookForBusiness;
+    getBillingType(): string;
+    setBillingType(value: string): PlansPlanbookForBusiness;
     getPrice(): string;
     setPrice(value: string): PlansPlanbookForBusiness;
     getPeriod(): string;
@@ -586,6 +608,7 @@ export namespace PlansPlanbookForBusiness {
         isPostFup: boolean,
         dataLimit?: string,
         type: string,
+        billingType: string,
         price: string,
         period: string,
         customerCount: number,
@@ -610,6 +633,10 @@ export class GetPlansPlanbookForBusinessRequest extends jspb.Message {
     getTypesList(): Array<string>;
     setTypesList(value: Array<string>): GetPlansPlanbookForBusinessRequest;
     addTypes(value: string, index?: number): string;
+    clearBillingTypesList(): void;
+    getBillingTypesList(): Array<string>;
+    setBillingTypesList(value: Array<string>): GetPlansPlanbookForBusinessRequest;
+    addBillingTypes(value: string, index?: number): string;
     getBusinessId(): string;
     setBusinessId(value: string): GetPlansPlanbookForBusinessRequest;
 
@@ -630,6 +657,7 @@ export namespace GetPlansPlanbookForBusinessRequest {
         offset: number,
         search: string,
         typesList: Array<string>,
+        billingTypesList: Array<string>,
         businessId: string,
     }
 }
