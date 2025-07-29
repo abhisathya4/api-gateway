@@ -26,6 +26,9 @@ export const planbookSchema = z
     groupname: z.string().openapi({
       description: "RADIUS group name",
     }),
+    billing_type: z.string().openapi({
+      description: "Billing type",
+    }),
     tenant_id: z.string().openapi({
       description: "Tenant ID",
     }),
@@ -77,6 +80,9 @@ export const planbookDetailsSchema = z
     groupname: z.string().openapi({
       description: "RADIUS group name",
     }),
+    billing_type: z.string().openapi({
+      description: "Billing type",
+    }),
     tenant_id: z.string().openapi({
       description: "Tenant ID",
     }),
@@ -101,6 +107,9 @@ export const createPlanbookParamsSchema = z
     }),
     period: z.string().optional().openapi({
       description: "Billing period (e.g., monthly, yearly)",
+    }),
+    billing_type: z.string().optional().openapi({
+      description: "Billing type",
     }),
   })
   .openapi({
@@ -144,6 +153,9 @@ export const updatePlanbookParamsSchema = z
     }),
     period: z.string().optional().openapi({
       description: "Billing period (e.g., monthly, yearly)",
+    }),
+    billing_type: z.string().optional().openapi({
+      description: "Billing type",
     }),
   })
   .openapi({
@@ -221,6 +233,9 @@ export const getPlanbooksRequestSchema = z
     plan_ids: z.array(z.string()).openapi({
       description: "List of plan IDs to filter by",
     }),
+    billing_types: z.array(z.string()).openapi({
+      description: "List of billing types to filter by (EndUser, Business, LeaseLine)",
+    }),
   })
   .openapi({
     title: "GetPlanbooksRequest",
@@ -292,7 +307,7 @@ export const getBusinessesForPlanRequestSchema = z
     types: z.array(z.string()).openapi({
       description: "Filter businesses by type (B2B, B2B2C, B2C)",
     }),
-    billing_type: z.array(z.string()).openapi({
+    billing_types: z.array(z.string()).openapi({
       description:
         "Filter businesses by billing type (EndUser, LeaseLine, Business)",
     }),
@@ -364,6 +379,9 @@ export const planPlanbookForBusinessSchema = z
     plan_id: z.string().uuid().openapi({
       description: "Plan ID",
     }),
+    billing_type: z.string().openapi({
+      description: "Billing type",
+    }),
   })
   .openapi({
     title: "PlanPlanbookForBusiness",
@@ -386,6 +404,9 @@ export const getPlansPlanbookForBusinessRequestSchema = z
     }),
     business_id: z.string().openapi({
       description: "Business ID",
+    }),
+    billing_types: z.array(z.string()).openapi({
+      description: "Filter plans by billing type (EndUser, LeaseLine, Business)",
     }),
   })
   .openapi({

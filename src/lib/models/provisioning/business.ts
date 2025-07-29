@@ -14,9 +14,6 @@ export const businessSchema = z
     type: z.string().openapi({
       description: "Business type",
     }),
-    billing_type: z.string().openapi({
-      description: "Billing type",
-    }),
     tenant_id: z.string().openapi({
       description: "Tenant ID",
     }),
@@ -37,9 +34,6 @@ export const businessWithCountsSchema = z
     }),
     type: z.string().openapi({
       description: "Business type",
-    }),
-    billing_type: z.string().openapi({
-      description: "Billing type",
     }),
     customer_count: z.number().int().openapi({
       description: "Number of customers associated with this business",
@@ -66,9 +60,6 @@ export const createBusinessRequestSchema = z
         }),
         type: z.string().openapi({
           description: "Business type",
-        }),
-        billing_type: z.string().openapi({
-          description: "Billing type",
         }),
       })
       .openapi({
@@ -102,9 +93,6 @@ export const updateBusinessRequestSchema = z
         }),
         type: z.string().optional().openapi({
           description: "Business type",
-        }),
-        billing_type: z.string().optional().openapi({
-          description: "Billing type",
         }),
       })
       .openapi({
