@@ -8,8 +8,10 @@ import { GrpcClient } from "../../grpc/grpc-client";
 import * as nasPb from "../../grpc/generated/nas_pb";
 import * as commonPb from "../../grpc/generated/common_pb";
 import {
+  getNASDeviceResponseSchema,
   registerNasDeviceRequestSchema,
   registerNasDeviceResponseSchema,
+  selectNasDeviceSchema,
   sysRegisterNasDeviceRequestSchema,
 } from "../../lib/models/provisioning";
 import { errorSchema } from "../../lib/utils/routingUtils";
@@ -20,6 +22,227 @@ import "zod-openapi/extend";
 import authMiddleware from "@/lib/middleware/auth";
 
 export const nasRoutes = new Hono()
+  .get(
+    "/",
+    describeRoute({
+      summary: "Get NAS Devices",
+      description: "Get all NAS devices",
+      tags: ["NAS"],
+      parameters: [
+        {
+          name: "limit",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 10 },
+          description: "Pagination limit",
+        },
+        {
+          name: "offset",
+          in: "query",
+          required: false,
+          schema: { type: "integer", default: 0 },
+          description: "Pagination offset",
+        },
+        {
+          name: "search",
+          in: "query",
+          required: false,
+          schema: { type: "string" },
+          description: "Search term to filter by name, username, or email",
+        },
+        {
+          name: "types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of nas types to filter by",
+        },
+        {
+          name: "locations",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of nas locations to filter by",
+        },
+        {
+          name: "servers",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of nas servers to filter by",
+        },
+        {
+          name: "communities",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "List of nas communities to filter by",
+        },
+        {
+          name: "status",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "boolean" } },
+          description: "List of status values to filter by (active/inactive)",
+        },
+      ],
+      responses: {
+        200: {
+          description: "NAS devices retrieved successfully",
+          content: {
+            "application/json": {
+              schema: resolver(getNASDeviceResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const token = c.var.token;
+        const tenant_id = c.var.tenant_id;
+
+        const authContext = new commonPb.AuthContext();
+        authContext.setTenantId(tenant_id);
+        authContext.setToken(token);
+
+        // Create gRPC request
+        const grpcRequest = new nasPb.GetNasDevicesRequest();
+        grpcRequest.setAuthContext(authContext);
+
+        // Set pagination parameters
+        const limit = parseInt(c.req.query("limit") || "10");
+        const offset = parseInt(c.req.query("offset") || "0");
+        grpcRequest.setLimit(limit);
+        grpcRequest.setOffset(offset);
+
+        // Set filter parameters
+        const search = c.req.query("search");
+        if (search) {
+          grpcRequest.setSearch(search);
+        }
+
+        // Handle types parameter (both with and without brackets)
+        let types = c.req.queries("types");
+        if (!types || types.length === 0) {
+          types = c.req.queries("types[]");
+        }
+        if (types && types.length > 0) {
+          grpcRequest.setTypesList(types);
+        }
+
+        // Handle locations parameter (both with and without brackets)
+        let locations = c.req.queries("locations");
+        if (!locations || locations.length === 0) {
+          locations = c.req.queries("locations[]");
+        }
+        if (locations && locations.length > 0) {
+          grpcRequest.setLocationsList(locations);
+        }
+
+        // Handle servers parameter (both with and without brackets)
+        let servers = c.req.queries("servers");
+        if (!servers || servers.length === 0) {
+          servers = c.req.queries("servers[]");
+        }
+        if (servers && servers.length > 0) {
+          grpcRequest.setServersList(servers);
+        }
+
+        // Handle communities parameter (both with and without brackets)
+        let communities = c.req.queries("communities");
+        if (!communities || communities.length === 0) {
+          communities = c.req.queries("communities[]");
+        }
+        if (communities && communities.length > 0) {
+          grpcRequest.setCommunitiesList(communities);
+        }
+
+        // Handle status parameter (both with and without brackets)
+        let statusValues = c.req.queries("status");
+        if (!statusValues || statusValues.length === 0) {
+          statusValues = c.req.queries("status[]");
+        }
+        if (statusValues && statusValues.length > 0) {
+          grpcRequest.setStatusList(statusValues.map((s) => s === "true"));
+        }
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getNasClient();
+
+        try {
+          const response = await promisifyGrpcCall<nasPb.GetNasDevicesResponse>(
+            (callback) => client.getNasDevices(grpcRequest, callback)
+          );
+
+          const nasDevices = response.getDataList().map((p) => p.toObject());
+          const meta = response.getMeta()?.toObject();
+
+          const responseData: z.infer<typeof getNASDeviceResponseSchema> = {
+            data: selectNasDeviceSchema.array().parse(
+              nasDevices.map((nasDevice) => ({
+                id: nasDevice.id,
+                nasname: nasDevice.nasname,
+                shortname: nasDevice.shortname,
+                type: nasDevice.type,
+                ports: nasDevice.ports,
+                secret: nasDevice.secret,
+                server: nasDevice.server,
+                community: nasDevice.community,
+                description: nasDevice.description,
+                location: nasDevice.location,
+                active: nasDevice.active,
+                last_seen: nasDevice.lastSeen,
+                require_ma: nasDevice.requireMa,
+                limit_proxy_state: nasDevice.limitProxyState,
+                tenantId: nasDevice.tenantId,
+                active_sessions: nasDevice.activeSessions,
+              }))
+            ),
+            meta: meta ? {
+              limit: meta.limit,
+              offset: meta.offset,
+              total: meta.total,
+            } : undefined,
+          };
+          
+          // Return response
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error getting NAS devices:", error);
+
+          // Map gRPC error codes to appropriate HTTP status codes
+          if (error.code === Status.INVALID_ARGUMENT) {
+            return c.json({ error: "Invalid request parameters" }, 400);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to get NAS devices" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in get NAS devices route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
   .post(
     "/register",
     describeRoute({
@@ -95,6 +318,12 @@ export const nasRoutes = new Hono()
         }
         if (requestData.device_params.description) {
           deviceParams.setDescription(requestData.device_params.description);
+        }
+        if (requestData.device_params.location) {
+          deviceParams.setLocation(requestData.device_params.location);
+        }
+        if (requestData.device_params.active) {
+          deviceParams.setActive(requestData.device_params.active);
         }
         if (requestData.device_params.require_ma) {
           deviceParams.setRequireMa(requestData.device_params.require_ma);
@@ -215,9 +444,6 @@ export const nasRoutes = new Hono()
         deviceParams.setShortname(requestData.device_params.shortname);
         deviceParams.setType(requestData.device_params.type);
         deviceParams.setSecret(requestData.device_params.secret);
-        deviceParams.setOrganizationId(
-          requestData.device_params.organization_id
-        );
 
         if (requestData.device_params.ports !== undefined) {
           deviceParams.setPorts(requestData.device_params.ports);
@@ -231,6 +457,12 @@ export const nasRoutes = new Hono()
         if (requestData.device_params.description) {
           deviceParams.setDescription(requestData.device_params.description);
         }
+        if (requestData.device_params.location) {
+          deviceParams.setLocation(requestData.device_params.location);
+        }
+        if (requestData.device_params.active) {
+          deviceParams.setActive(requestData.device_params.active);
+        }
         if (requestData.device_params.require_ma) {
           deviceParams.setRequireMa(requestData.device_params.require_ma);
         }
@@ -239,6 +471,9 @@ export const nasRoutes = new Hono()
             requestData.device_params.limit_proxy_state
           );
         }
+        deviceParams.setTenantId(
+          requestData.device_params.tenant_id
+        );
 
         grpcRequest.setDeviceParams(deviceParams);
 

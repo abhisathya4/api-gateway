@@ -303,8 +303,6 @@ export const customersRoutes = new Hono()
           const customers = response.getDataList().map((c) => c.toObject());
           const meta = response.getMeta()?.toObject();
 
-          console.log("Customers:", customers);
-          console.log("Meta:", meta);
 
           const responseData: z.infer<typeof getCustomersResponseSchema> = {
             data: customers.map((customer) => ({
@@ -483,9 +481,6 @@ export const customersRoutes = new Hono()
           // Convert gRPC response to our schema format
           const customers = response.getDataList().map((c) => c.toObject());
           const meta = response.getMeta()?.toObject();
-
-          console.log("Customers:", customers);
-          console.log("Meta:", meta);
 
           const responseData: z.infer<
             typeof getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema

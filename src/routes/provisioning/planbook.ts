@@ -83,6 +83,15 @@ export const planbookRoutes = new Hono()
           style: "form",
           explode: true,
         },
+        {
+          name: "billing_types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by billing types",
+          style: "form",
+          explode: true,
+        },
       ],
       responses: {
         200: {
@@ -136,17 +145,38 @@ export const planbookRoutes = new Hono()
           grpcRequest.setSearch(search);
         }
 
-        const planTypes = c.req.queries("plan_types");
+        // Handle plan_types parameter (both with and without brackets)
+        let planTypes = c.req.queries("plan_types");
+        if (!planTypes || planTypes.length === 0) {
+          planTypes = c.req.queries("plan_types[]");
+        }
         if (planTypes && planTypes.length > 0) {
           grpcRequest.setPlanTypesList(planTypes);
         }
 
-        const businessIds = c.req.queries("business_ids");
+        // Handle business_ids parameter (both with and without brackets)
+        let businessIds = c.req.queries("business_ids");
+        if (!businessIds || businessIds.length === 0) {
+          businessIds = c.req.queries("business_ids[]");
+        }
         if (businessIds && businessIds.length > 0) {
           grpcRequest.setBusinessIdsList(businessIds);
         }
 
-        const planIds = c.req.queries("plan_ids");
+        // Handle billing_types parameter (both with and without brackets)
+        let billingTypes = c.req.queries("billing_types");
+        if (!billingTypes || billingTypes.length === 0) {
+          billingTypes = c.req.queries("billing_types[]");
+        }
+        if (billingTypes && billingTypes.length > 0) {
+          grpcRequest.setBillingTypesList(billingTypes);
+        }
+
+        // Handle plan_ids parameter (both with and without brackets)
+        let planIds = c.req.queries("plan_ids");
+        if (!planIds || planIds.length === 0) {
+          planIds = c.req.queries("plan_ids[]");
+        }
         if (planIds && planIds.length > 0) {
           grpcRequest.setPlanIdsList(planIds);
         }
@@ -182,6 +212,7 @@ export const planbookRoutes = new Hono()
               plan_upspeed_unit: planbook.planUpspeedUnit,
               plan_downspeed_unit: planbook.planDownspeedUnit,
               groupname: planbook.groupname,
+              billing_type: planbook.billingType,
               tenant_id: planbook.tenantId,
             })),
             meta: meta
@@ -430,6 +461,7 @@ export const planbookRoutes = new Hono()
               period: planbook.period,
               price: planbook.price,
               groupname: planbook.groupname,
+              billing_type: planbook.billingType,
               tenant_id: planbook.tenantId,
             })),
           };
@@ -493,6 +525,15 @@ export const planbookRoutes = new Hono()
           required: false,
           schema: { type: "array", items: { type: "string" } },
           description: "Filter plans by type (Commercial, Enterprise)",
+        },
+        {
+          name: "billing_types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by billing types",
+          style: "form",
+          explode: true,
         },
       ],
       responses: {
@@ -656,6 +697,15 @@ export const planbookRoutes = new Hono()
           schema: { type: "array", items: { type: "string" } },
           description: "Filter plans by type (Commercial, Enterprise)",
         },
+        {
+          name: "billing_types",
+          in: "query",
+          required: false,
+          schema: { type: "array", items: { type: "string" } },
+          description: "Filter by billing types",
+          style: "form",
+          explode: true,
+        },
       ],
       responses: {
         200: {
@@ -697,6 +747,7 @@ export const planbookRoutes = new Hono()
         const offset = parseInt(c.req.query("offset") || "0");
         const search = c.req.query("search") || "";
         const types = c.req.queries("types") || [];
+        const billing_types = c.req.queries("billing_types") || [];
         const token = c.var.token;
 
         // Create gRPC request
@@ -712,6 +763,7 @@ export const planbookRoutes = new Hono()
         grpcRequest.setOffset(offset);
         grpcRequest.setSearch(search);
         grpcRequest.setTypesList(types);
+        grpcRequest.setBillingTypesList(billing_types);
         grpcRequest.setBusinessId(businessId);
 
         // Get gRPC client and make the call
@@ -747,6 +799,7 @@ export const planbookRoutes = new Hono()
               customer_count: plan.customerCount,
               tenant_id: plan.tenantId,
               plan_id: plan.planId,
+              billing_type: plan.billingType,
             })),
             meta: meta
               ? {
@@ -860,6 +913,9 @@ export const planbookRoutes = new Hono()
         }
         if (requestData.planbook_params.period) {
           planbookParams.setPeriod(requestData.planbook_params.period);
+        }
+        if (requestData.planbook_params.billing_type) {
+          planbookParams.setBillingType(requestData.planbook_params.billing_type);
         }
 
         grpcRequest.setPlanbookParams(planbookParams);

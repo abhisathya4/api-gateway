@@ -94,7 +94,6 @@ export const businessRoutes = new Hono()
         const offset = parseInt(c.req.query("offset") || "0");
         const search = c.req.query("search") || "";
         const types = c.req.queries("types") || [];
-        const billing_types = c.req.queries("billing_types") || [];
         const token = c.var.token;
 
         // Create gRPC request
@@ -110,7 +109,6 @@ export const businessRoutes = new Hono()
         grpcRequest.setOffset(offset);
         grpcRequest.setSearch(search);
         grpcRequest.setTypeList(types);
-        grpcRequest.setBillingTypeList(billing_types);
 
         // Get gRPC client and make the call
         const client = GrpcClient.getInstance().getBusinessClient();
@@ -133,7 +131,6 @@ export const businessRoutes = new Hono()
               id: business.id,
               name: business.name,
               type: business.type,
-              billing_type: business.billingType,
               tenant_id: business.tenantId,
               customer_count: business.customerCount,
               planbook_count: business.planbookCount,
@@ -228,7 +225,6 @@ export const businessRoutes = new Hono()
           new businessPb.CreateBusinessRequest.BusinessParams();
         businessParams.setName(requestData.business_params.name);
         businessParams.setType(requestData.business_params.type);
-        businessParams.setBillingType(requestData.business_params.billing_type);
         businessParams.setTenantId(tenantId);
 
         grpcRequest.setBusinessParams(businessParams);
@@ -253,7 +249,6 @@ export const businessRoutes = new Hono()
               id: business.id,
               name: business.name,
               type: business.type,
-              billing_type: business.billingType,
               tenant_id: tenantId,
             })),
           };
@@ -363,7 +358,6 @@ export const businessRoutes = new Hono()
               id: business.id,
               name: business.name,
               type: business.type,
-              billing_type: business.billingType,
               tenant_id: business.tenantId,
             })),
           };
@@ -472,11 +466,6 @@ export const businessRoutes = new Hono()
         if (requestData.business_params.type) {
           businessParams.setType(requestData.business_params.type);
         }
-        if (requestData.business_params.billing_type) {
-          businessParams.setBillingType(
-            requestData.business_params.billing_type
-          );
-        }
 
         grpcRequest.setBusinessParams(businessParams);
 
@@ -509,7 +498,6 @@ export const businessRoutes = new Hono()
               id: business.id,
               name: business.name,
               type: business.type,
-              billing_type: business.billingType,
               tenant_id: business.tenantId,
             })),
             updated_planbook: updatedPlanbook,
