@@ -31,8 +31,7 @@ message CreateBusinessRequest {
   message BusinessParams {
     string name = 1;
     string type = 2;
-    string billing_type = 3;
-    string tenant_id = 4;
+    string tenant_id = 3;
   }
   
   BusinessParams business_params = 2;
@@ -42,24 +41,21 @@ message CreateBusinessRequest {
 // id
 // name
 // type
-// billingType
 // tenantId
 message Business {
   string id = 1;
   string name = 2;
   string type = 3;
-  string billing_type = 4;
-  string tenant_id = 5;
+  string tenant_id = 4;
 }
 
 message BusinessWithCounts {
   string id = 1;
   string name = 2;
   string type = 3;
-  string billing_type = 4;
-  int32 customer_count = 5;
-  int32 planbook_count = 6;
-  string tenant_id = 7;
+  int32 customer_count = 4;
+  int32 planbook_count = 5;
+  string tenant_id = 6;
 }
 
 // Response from creating a new business
@@ -76,7 +72,6 @@ message UpdateBusinessRequest {
   message BusinessParams {
     optional string name = 1;
     optional string type = 2;
-    optional string billing_type = 3;
   }
   
   BusinessParams business_params = 3;
@@ -116,9 +111,6 @@ message GetBusinessesRequest {
 
   // Filter for business types
   repeated string type = 5;
-
-  // Filter for billing types
-  repeated string billing_type = 6;
 }
 
 // Response with all businesses

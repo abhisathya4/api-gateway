@@ -21,7 +21,8 @@ message Planbook {
   string period = 4;
   string price = 5;
   string groupname = 6;
-  string tenant_id = 7;
+  string billing_type = 7;
+  string tenant_id = 8;
 }
 
 message PlanbookDetails {
@@ -38,7 +39,8 @@ message PlanbookDetails {
   string period = 11;
   string price = 12;
   string groupname = 13;
-  string tenant_id = 14;
+  string billing_type = 14;
+  string tenant_id = 15;
 }
 
 // Planbook service for managing planbook entries
@@ -69,9 +71,10 @@ message CreatePlanbookRequest {
   // Planbook parameters
   message PlanbookParams {
     string plan_id = 1;
-    optional string business_id = 2;
-    optional double price = 3;
-    optional string period = 4;
+    string billing_type = 2; 
+    optional string business_id = 3;
+    optional double price = 4;
+    optional string period = 5;
   }
   
   PlanbookParams planbook_params = 2;
@@ -93,6 +96,7 @@ message UpdatePlanbookRequest {
   message PlanbookParams {
     optional double price = 1;
     optional string period = 2;
+    optional string billing_type = 3;
   }
   
   PlanbookParams planbook_params = 3;
@@ -136,6 +140,9 @@ message GetPlanbooksRequest {
   
   // Optional list of plan IDs to filter by
   repeated string plan_ids = 7;
+
+  // Optional list of billing types to filter by
+  repeated string billing_types = 8;
 }
 
 // Response with all planbook entries
@@ -198,11 +205,12 @@ message PlansPlanbookForBusiness {
   bool is_post_fup = 7;
   optional string data_limit = 8;
   string type = 9;
-  string price = 10;
-  string period = 11;
-  int32 customer_count = 12;
-  string tenant_id = 13;
-  string plan_id = 14;
+  string billing_type = 10;
+  string price = 11;
+  string period = 12;
+  int32 customer_count = 13;
+  string tenant_id = 14;
+  string plan_id = 15;
 }
 
 // Request to get all internet service plans
@@ -221,8 +229,11 @@ message GetPlansPlanbookForBusinessRequest {
   // Filter plans by type (Commercial, Enterprise)
   repeated string types = 5;
 
+  // Filter planbooks by billing types
+  repeated string billing_types = 6;
+
   // Filter plans by business id
-  string business_id = 6;
+  string business_id = 7;
 }
 
 message GetPlansPlanbookForBusinessResponse {

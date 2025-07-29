@@ -4,6 +4,8 @@ syntax = "proto3";
 package nas;
 
 import "common.proto";
+import "google/protobuf/timestamp.proto";
+
 
 // NAS service for managing Network Access Server devices
 service NasService {
@@ -12,6 +14,9 @@ service NasService {
   
   // Register a new NAS device at the system level
   rpc SysRegisterNasDevice(SysRegisterNasDeviceRequest) returns (RegisterNasDeviceResponse);
+
+  // Get all nas devices
+  rpc GetNasDevices(GetNasDevicesRequest) returns (GetNasDevicesResponse);
 }
 
 // Request to register a new NAS device with authentication
@@ -28,8 +33,11 @@ message RegisterNasDeviceRequest {
     optional string server = 6;
     optional string community = 7;
     optional string description = 8;
-    optional string require_ma = 9;
-    optional string limit_proxy_state = 10;
+    optional string location = 9;
+    optional bool active = 10;
+    optional string require_ma = 11;
+    optional string limit_proxy_state = 12;
+    optional string tenant_id = 13;
   }
   
   DeviceParams device_params = 2;
@@ -38,7 +46,7 @@ message RegisterNasDeviceRequest {
 // Request to register a new NAS device at the system level
 message SysRegisterNasDeviceRequest {
   // NAS device parameters
-  message DeviceParams {
+ message DeviceParams {
     string nasname = 1;
     string shortname = 2;
     string type = 3;
@@ -47,9 +55,11 @@ message SysRegisterNasDeviceRequest {
     optional string server = 6;
     optional string community = 7;
     optional string description = 8;
-    optional string require_ma = 9;
-    optional string limit_proxy_state = 10;
-    string organization_id = 11;
+    optional string location = 9;
+    optional bool active = 10;
+    optional string require_ma = 11;
+    optional string limit_proxy_state = 12;
+    string tenant_id = 13;
   }
   
   DeviceParams device_params = 1;
@@ -78,12 +88,72 @@ message Nas {
   optional string server = 7;
   optional string community = 8;
   optional string description = 9;
-  string require_ma = 10;
-  string limit_proxy_state = 11;
-  string tenant_id = 12;
+  optional string location = 10;
+  optional bool active = 11;
+  google.protobuf.Timestamp last_seen = 12;
+  string require_ma = 13;
+  string limit_proxy_state = 14;
+  string tenant_id = 15;
 }
 
 // Response from registering a NAS device
 message RegisterNasDeviceResponse {
   repeated Nas nas_devices = 1;
+}
+
+message NasWithDetails {
+  string id = 1;
+  string nasname = 2;
+  string shortname = 3;
+  string type = 4;
+  optional int32 ports = 5;
+  string secret = 6;
+  optional string server = 7;
+  optional string community = 8;
+  optional string description = 9;
+  optional string location = 10;
+  optional bool active = 11;
+  google.protobuf.Timestamp last_seen = 12;
+  string require_ma = 13;
+  string limit_proxy_state = 14;
+  string tenant_id = 15;
+  int32 active_sessions = 16;
+}
+
+message GetNasDevicesRequest {
+  // Authentication context
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Optional search term to filter by name, username, or email
+  optional string search = 4;
+  
+  // Optional list of types to filter by
+  repeated string types = 5;
+  
+  // Optional list of locations to filter by
+  repeated string locations = 6;
+
+  // Optional list of servers to filter by
+  repeated string servers = 7;
+
+  // Optional list of communities to filter by
+  repeated string communities = 8;
+  
+  // Optional status filter (active/inactive)
+  repeated bool status = 9;
+}
+
+// Response containing customers and pagination metadata
+message GetNasDevicesResponse {
+  // List of customers with extended information
+  repeated NasWithDetails data = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
 }
