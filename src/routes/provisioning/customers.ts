@@ -19,9 +19,10 @@ import {
   updateCustomerDetailsResponseSchema,
   updateCustomerPlanRequestSchema,
   updateCustomerPlanResponseSchema,
-  restoreCustomerPlanRequestSchema,
-  restoreCustomerPlanResponseSchema,
+  renewOrActivateCustomerPlanRequestSchema,
+  renewOrActivateCustomerPlanResponseSchema,
   getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema,
+  deactivateCustomerPlanResponseSchema,
 } from "../../lib/models/provisioning";
 import { errorSchema } from "../../lib/utils/routingUtils";
 import { Status } from "@grpc/grpc-js/build/src/constants";
@@ -302,7 +303,6 @@ export const customersRoutes = new Hono()
           // Convert gRPC response to our schema format
           const customers = response.getDataList().map((c) => c.toObject());
           const meta = response.getMeta()?.toObject();
-
 
           const responseData: z.infer<typeof getCustomersResponseSchema> = {
             data: customers.map((customer) => ({
@@ -944,10 +944,10 @@ export const customersRoutes = new Hono()
     }
   )
   .post(
-    "/:customerId/restore-plan",
+    "/:customerId/renew-or-activate",
     describeRoute({
-      summary: "Restore Customer Plan",
-      description: "Restore a customer's plan after FUP enforcement",
+      summary: "Renew or Activate Customer",
+      description: "Renew or activate a customer's plan after FUP enforcement",
       tags: ["Customers"],
       parameters: [
         {
@@ -958,19 +958,14 @@ export const customersRoutes = new Hono()
           description: "Customer ID",
         },
       ],
-      requestBody: {
-        content: {
-          "application/json": {
-            schema: resolver(restoreCustomerPlanRequestSchema) as any,
-          },
-        },
-      },
       responses: {
         200: {
           description: "Customer plan restored successfully",
           content: {
             "application/json": {
-              schema: resolver(restoreCustomerPlanResponseSchema) as any,
+              schema: resolver(
+                renewOrActivateCustomerPlanResponseSchema
+              ) as any,
             },
           },
         },
@@ -992,21 +987,20 @@ export const customersRoutes = new Hono()
         },
       },
     }),
-    zValidator("json", restoreCustomerPlanRequestSchema),
     authMiddleware,
     async (c) => {
       try {
+        console.log("Top of renew or activate customer plan route")
         const customerId = c.req.param("customerId");
-        const requestData = await c.req.json();
         const token = c.var.token;
 
         // Create gRPC request
-        const grpcRequest = new customersPb.RestoreCustomerPlanRequest();
+        const grpcRequest =
+          new customersPb.AuthRenewOrActivateCustomerRequest();
         grpcRequest.setCustomerId(customerId);
 
         // Set auth context
         const authContext = new commonPb.AuthContext();
-        authContext.setTenantId(requestData.auth_context.tenant_id);
         authContext.setToken(token);
         grpcRequest.setAuthContext(authContext);
 
@@ -1014,22 +1008,27 @@ export const customersRoutes = new Hono()
         const client = GrpcClient.getInstance().getCustomerClient();
 
         try {
+          console.log("Before gRPC call");
           // Use promisifyGrpcCall instead of manual Promise creation
           const response =
-            await promisifyGrpcCall<customersPb.RestoreCustomerPlanResponse>(
-              (callback) => client.restoreCustomerPlan(grpcRequest, callback)
+            await promisifyGrpcCall<customersPb.AuthRenewOrActivateCustomerResponse>(
+              (callback) =>
+                client.authRenewOrActivateCustomer(grpcRequest, callback)
             );
 
+            console.log("After gRPC call");
           // Convert gRPC response to our schema format
           const customers = response
-            .getRestoredCustomerList()
+            .getRenewedCustomerList()
             .map((c) => c.toObject());
           const radusergroups = response
-            .getRestoredRadusergroupsList()
+            .getRenewedRadusergroupsList()
             .map((r) => r.toObject());
 
-          const responseData = {
-            restored_customer: customers.map((customer) => ({
+          const responseData: z.infer<
+            typeof renewOrActivateCustomerPlanResponseSchema
+          > = {
+            renewed_customer: customers.map((customer) => ({
               id: customer.id,
               name: customer.name,
               email: customer.email,
@@ -1039,14 +1038,138 @@ export const customersRoutes = new Hono()
               created_at: customer.createdAt,
               active: customer.active,
               last_renew_date: customer.lastRenewDate,
+              last_active: customer.lastActive,
               data_usage: customer.dataUsage,
               tenant_id: customer.tenantId,
             })),
-            restored_radusergroups: radusergroups.map((group) => ({
+            renewed_radusergroups: radusergroups.map((group) => ({
               id: group.id,
               username: group.username,
               groupname: group.groupname,
               priority: group.priority,
+              tenant_id: group.tenantId,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error renewing or activating customer plan:", error);
+
+          if (error.code === Status.NOT_FOUND) {
+            return c.json({ error: "Customer not found" }, 404);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json(
+            { error: "Failed to renew or activate customer plan" },
+            500
+          );
+        }
+      } catch (error) {
+        console.error("Error in renew or activate customer plan route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .post(
+    "/:customerId/deactivate",
+    describeRoute({
+      summary: "Deactivate Customer",
+      description: "Deactivate a customer's plan",
+      tags: ["Customers"],
+      parameters: [
+        {
+          name: "customerId",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Customer ID",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Customer plan deactivated successfully",
+          content: {
+            "application/json": {
+              schema: resolver(deactivateCustomerPlanResponseSchema) as any,
+            },
+          },
+        },
+        404: {
+          description: "Customer not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    async (c) => {
+      try {
+        const customerId = c.req.param("customerId");
+        const token = c.var.token;
+
+        // Create gRPC request
+        const grpcRequest = new customersPb.AuthDeactivateCustomerRequest();
+        grpcRequest.setCustomerId(customerId);
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getCustomerClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<customersPb.AuthDeactivateCustomerResponse>(
+              (callback) => client.authDeactivateCustomer(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const customers = response
+            .getDeactivatedCustomerList()
+            .map((c) => c.toObject());
+          const radusergroups = response
+            .getDeactivatedRadusergroupsList()
+            .map((r) => r.toObject());
+
+          const responseData: z.infer<
+            typeof deactivateCustomerPlanResponseSchema
+          > = {
+            deactivated_customer: customers.map((customer) => ({
+              id: customer.id,
+              name: customer.name,
+              email: customer.email,
+              username: customer.username,
+              subscription_plan: customer.subscriptionPlan || undefined,
+              post_fup_plan: customer.postFupPlan || undefined,
+              created_at: customer.createdAt,
+              active: customer.active,
+              last_active: customer.lastActive,
+              last_renew_date: customer.lastRenewDate,
+              data_usage: customer.dataUsage,
+              tenant_id: customer.tenantId,
+            })),
+            deactivated_radusergroups: radusergroups.map((group) => ({
+              id: group.id,
+              username: group.username,
+              groupname: group.groupname,
+              priority: group.priority,
+              tenant_id: group.tenantId,
             })),
           };
 
@@ -1060,10 +1183,10 @@ export const customersRoutes = new Hono()
             return c.json({ error: "Permission denied" }, 403);
           }
 
-          return c.json({ error: "Failed to restore customer plan" }, 500);
+          return c.json({ error: "Failed to deactivate customer plan" }, 500);
         }
       } catch (error) {
-        console.error("Error in restore customer plan route:", error);
+        console.error("Error in deactivate customer plan route:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
     }

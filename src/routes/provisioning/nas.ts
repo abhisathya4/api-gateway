@@ -13,6 +13,8 @@ import {
   registerNasDeviceResponseSchema,
   selectNasDeviceSchema,
   sysRegisterNasDeviceRequestSchema,
+  updateNasDeviceRequestSchema,
+  updateNasDeviceResponseSchema,
 } from "../../lib/models/provisioning";
 import { errorSchema } from "../../lib/utils/routingUtils";
 import { Status } from "@grpc/grpc-js/build/src/constants";
@@ -524,6 +526,182 @@ export const nasRoutes = new Hono()
         }
       } catch (error) {
         console.error("Error in system register NAS device route:", error);
+        return c.json({ error: "Internal server error" }, 500);
+      }
+    }
+  )
+  .put(
+    "/:nasId",
+    describeRoute({
+      summary: "Update NAS Device",
+      description: "Update an existing NAS device",
+      tags: ["NAS"],
+      parameters: [
+        {
+          name: "nasId",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "NAS device ID",
+        },
+      ],
+      requestBody: {
+        content: {
+          "application/json": {
+            schema: resolver(updateNasDeviceRequestSchema) as any,
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "NAS device updated successfully",
+          content: {
+            "application/json": {
+              schema: resolver(updateNasDeviceResponseSchema) as any,
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        404: {
+          description: "NAS device not found",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: resolver(errorSchema) as any,
+            },
+          },
+        },
+      },
+    }),
+    authMiddleware,
+    zValidator("json", updateNasDeviceRequestSchema),
+    async (c) => {
+      try {
+        const nasId = c.req.param("nasId");
+        const requestData = await c.req.valid("json");
+        const token = c.var.token;
+        const tenant_id = c.var.tenant_id;
+
+        // Validate NAS ID
+        if (!nasId || !z.string().uuid().safeParse(nasId).success) {
+          return c.json({ error: "Invalid NAS device ID" }, 400);
+        }
+
+        // Create gRPC request
+        const grpcRequest = new nasPb.UpdateNasDeviceRequest();
+
+        // Set auth context
+        const authContext = new commonPb.AuthContext();
+        authContext.setTenantId(tenant_id);
+        authContext.setToken(token);
+        grpcRequest.setAuthContext(authContext);
+
+        // Set device parameters
+        const deviceParams = new nasPb.UpdateNasDeviceRequest.DeviceParams();
+        deviceParams.setId(nasId);
+        deviceParams.setNasname(requestData.device_params.nasname);
+        deviceParams.setShortname(requestData.device_params.shortname);
+        deviceParams.setType(requestData.device_params.type);
+        deviceParams.setSecret(requestData.device_params.secret);
+
+        if (requestData.device_params.ports || requestData.device_params.ports === 0) {
+          deviceParams.setPorts(requestData.device_params.ports);
+        }
+        if (requestData.device_params.server) {
+          deviceParams.setServer(requestData.device_params.server);
+        }
+        if (requestData.device_params.community) {
+          deviceParams.setCommunity(requestData.device_params.community);
+        }
+        if (requestData.device_params.description) {
+          deviceParams.setDescription(requestData.device_params.description);
+        }
+        if (requestData.device_params.location) {
+          deviceParams.setLocation(requestData.device_params.location);
+        }
+        if (requestData.device_params.active !== undefined && requestData.device_params.active !== null) {
+          deviceParams.setActive(requestData.device_params.active);
+        }
+        if (requestData.device_params.require_ma) {
+          deviceParams.setRequireMa(requestData.device_params.require_ma);
+        }
+        if (requestData.device_params.limit_proxy_state) {
+          deviceParams.setLimitProxyState(
+            requestData.device_params.limit_proxy_state
+          );
+        }
+        if (requestData.device_params.tenant_id) {
+          deviceParams.setTenantId(requestData.device_params.tenant_id);
+        }
+
+        grpcRequest.setDeviceParams(deviceParams);
+
+        // Get gRPC client and make the call
+        const client = GrpcClient.getInstance().getNasClient();
+
+        try {
+          // Use promisifyGrpcCall instead of manual Promise creation
+          const response =
+            await promisifyGrpcCall<nasPb.UpdateNasDeviceResponse>(
+              (callback) => client.updateNasDevice(grpcRequest, callback)
+            );
+
+          // Convert gRPC response to our schema format
+          const nasDevices = response
+            .getNasDevicesList()
+            .map((n) => n.toObject());
+
+          const responseData = {
+            nas_devices: nasDevices.map((device) => ({
+              id: device.id,
+              nasname: device.nasname,
+              shortname: device.shortname,
+              type: device.type,
+              ports: device.ports,
+              secret: device.secret,
+              server: device.server,
+              community: device.community,
+              description: device.description,
+              location: device.location,
+              active: device.active,
+              lastSeen: device.lastSeen,
+              require_ma: device.requireMa,
+              limit_proxy_state: device.limitProxyState,
+              tenant_id: device.tenantId,
+            })),
+          };
+
+          return c.json(responseData, 200);
+        } catch (error: any) {
+          console.error("Error updating NAS device:", error);
+
+          // Map gRPC error codes to appropriate HTTP status codes
+          if (error.code === Status.NOT_FOUND) {
+            return c.json({ error: "NAS device not found" }, 404);
+          } else if (error.code === Status.INVALID_ARGUMENT) {
+            return c.json({ error: "Invalid request parameters" }, 400);
+          } else if (error.code === Status.PERMISSION_DENIED) {
+            return c.json({ error: "Permission denied" }, 403);
+          }
+
+          return c.json({ error: "Failed to update NAS device" }, 500);
+        }
+      } catch (error) {
+        console.error("Error in update NAS device route:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
     }
