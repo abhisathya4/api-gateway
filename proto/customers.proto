@@ -25,11 +25,20 @@ service CustomerService {
   // Get all customers with pagination and filtering options
   rpc GetCustomers(GetCustomersRequest) returns (GetCustomersResponse);
   
-  // Restore a customer's plan after FUP enforcement
-  rpc RestoreCustomerPlan(RestoreCustomerPlanRequest) returns (RestoreCustomerPlanResponse);
-
   // Get customers with plan, business, and planbook information with filtering and pagination
   rpc GetCustomersWithPlanBusinessAndPlanbookInfo(GetCustomersWithPlanBusinessAndPlanbookInfoRequest) returns (GetCustomersWithPlanBusinessAndPlanbookInfoResponse);
+
+  // Renew or activate a customer - initiated by user
+  rpc AuthRenewOrActivateCustomer(AuthRenewOrActivateCustomerRequest) returns (AuthRenewOrActivateCustomerResponse);
+
+  // Deactivate a customer - initiated by user
+  rpc AuthDeactivateCustomer(AuthDeactivateCustomerRequest) returns (AuthDeactivateCustomerResponse);
+
+  // Renew or activate a customer - initiated by system
+  rpc SysRenewOrActivateCustomer(SysRenewOrActivateCustomerRequest) returns (SysRenewOrActivateCustomerResponse);
+
+  // Deactivate a customer - initiated by system
+  rpc SysDeactivateCustomer(SysDeactivateCustomerRequest) returns (SysDeactivateCustomerResponse);
 }
 
 // Request to create a new customer
@@ -225,14 +234,51 @@ message GetCustomerResponse {
   repeated Customer customers = 1;
 }
 
-// Request to restore a customer's plan after FUP enforcement
-message RestoreCustomerPlanRequest {
+// Request to renew or activate a customer - initiated by user
+message AuthRenewOrActivateCustomerRequest {
+  common.AuthContext auth_context = 1;
+  string customer_id = 2;
+  optional google.protobuf.Timestamp last_renew_date = 3;
+}
+
+// Response from renewing or activating a customer - initiated by user
+message AuthRenewOrActivateCustomerResponse {
+  repeated Customer renewed_customer = 1;
+  repeated radius.Radusergroup renewed_radusergroups = 2;
+}
+
+// Request to renew or activate a customer - initiated by system
+message SysRenewOrActivateCustomerRequest {
+  string customer_id = 1;
+  optional google.protobuf.Timestamp last_renew_date = 2;
+}
+
+// Response from renewing or activating a customer - initiated by system
+message SysRenewOrActivateCustomerResponse {
+  repeated Customer renewed_customer = 1;
+  repeated radius.Radusergroup renewed_radusergroups = 2;
+}
+
+// Request to deactivate a customer - initiated by user
+message AuthDeactivateCustomerRequest {
   common.AuthContext auth_context = 1;
   string customer_id = 2;
 }
 
-// Response from restoring customer plan
-message RestoreCustomerPlanResponse {
-  repeated Customer restored_customer = 1;
-  repeated radius.Radusergroup restored_radusergroups = 2;
+// Response from deactivating a customer - initiated by user
+message AuthDeactivateCustomerResponse {
+  repeated Customer deactivated_customer = 1;
+  repeated radius.Radusergroup deactivated_radusergroups = 2;
 }
+
+// Request to deactivate a customer - initiated by system
+message SysDeactivateCustomerRequest {
+  string customer_id = 1;
+}
+
+// Response from deactivating a customer - initiated by system
+message SysDeactivateCustomerResponse {
+  repeated Customer deactivated_customer = 1;
+  repeated radius.Radusergroup deactivated_radusergroups = 2;
+}
+

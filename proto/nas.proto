@@ -17,6 +17,9 @@ service NasService {
 
   // Get all nas devices
   rpc GetNasDevices(GetNasDevicesRequest) returns (GetNasDevicesResponse);
+
+  // Update a nas device
+  rpc UpdateNasDevice(UpdateNasDeviceRequest) returns (UpdateNasDeviceResponse);
 }
 
 // Request to register a new NAS device with authentication
@@ -156,4 +159,33 @@ message GetNasDevicesResponse {
   
   // Pagination metadata
   common.PaginationMeta meta = 2;
+}
+
+message UpdateNasDeviceRequest {
+  // Authentication context
+  common.AuthContext auth_context = 1;
+  
+  // NAS device parameters
+  message DeviceParams {
+    string id = 1;
+    string nasname = 2;
+    string shortname = 3;
+    string type = 4;
+    optional int32 ports = 5;
+    string secret = 6;
+    optional string server = 7;
+    optional string community = 8;
+    optional string description = 9;
+    optional string location = 10;
+    optional bool active = 11;
+    optional string require_ma = 12;
+    optional string limit_proxy_state = 13;
+    optional string tenant_id = 14;
+  }
+  
+  DeviceParams device_params = 2;
+}
+
+message UpdateNasDeviceResponse {
+  repeated Nas nas_devices = 1;
 }

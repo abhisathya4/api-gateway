@@ -62,6 +62,9 @@ service PlanbookService {
 
   // Get plans planbook for a specific business
   rpc GetPlansPlanbookForBusiness(GetPlansPlanbookForBusinessRequest) returns (GetPlansPlanbookForBusinessResponse);
+
+  // Get planbooks from filters
+  rpc GetPlanbooksFromFilters(GetPlanbooksFromFiltersRequest) returns (GetPlanbooksFromFiltersResponse);
 }
 
 // Request to create a new planbook entry
@@ -168,7 +171,7 @@ message BusinessPlanbookForPlan {
 
 message GetBusinessesPlanbookForPlanRequest {
   common.AuthContext auth_context = 1;
-  string plan_id = 2;
+  optional string plan_id = 2;
 
   // Pagination limit (max number of items to return)
   int32 limit = 3;
@@ -233,12 +236,45 @@ message GetPlansPlanbookForBusinessRequest {
   repeated string billing_types = 6;
 
   // Filter plans by business id
-  string business_id = 7;
+  optional string business_id = 7;
 }
 
 message GetPlansPlanbookForBusinessResponse {
   // List of plans
   repeated PlansPlanbookForBusiness plans = 1;
+  
+  // Pagination metadata
+  common.PaginationMeta meta = 2;
+}
+
+message GetPlanbooksFromFiltersRequest {
+  common.AuthContext auth_context = 1;
+  
+  // Pagination limit (max number of items to return)
+  int32 limit = 2;
+  
+  // Pagination offset (starting position)
+  int32 offset = 3;
+  
+  // Filter planbooks by plan id
+  optional string plan_id = 4;
+
+  // Filter planbooks by business id
+  optional string business_id = 5;
+
+  // Filter planbooks by period
+  optional string period = 6;
+
+  // Filter planbooks by price
+  optional string price = 7;
+
+  // Filter planbooks by billing type
+  optional string billing_type = 8;
+}
+
+message GetPlanbooksFromFiltersResponse {
+  // List of planbooks
+  repeated Planbook planbooks = 1;
   
   // Pagination metadata
   common.PaginationMeta meta = 2;
