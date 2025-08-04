@@ -234,7 +234,8 @@ export const getPlanbooksRequestSchema = z
       description: "List of plan IDs to filter by",
     }),
     billing_types: z.array(z.string()).openapi({
-      description: "List of billing types to filter by (EndUser, Business, LeaseLine)",
+      description:
+        "List of billing types to filter by (EndUser, Business, LeaseLine)",
     }),
   })
   .openapi({
@@ -255,6 +256,20 @@ export const getPlanbooksResponseSchema = z
   .openapi({
     title: "GetPlanbooksResponse",
     description: "Response with all planbook entries",
+  });
+
+export const getFilteredPlanbooksResponseSchema = z
+  .object({
+    data: z.array(planbookSchema).openapi({
+      description: "List of planbook entries",
+    }),
+    meta: paginationMetaSchema.optional().openapi({
+      description: "Pagination metadata",
+    }),
+  })
+  .openapi({
+    title: "GetFilteredPlanbooksResponse",
+    description: "Response with filtered planbook entries",
   });
 
 // Business for plan schema
@@ -406,7 +421,8 @@ export const getPlansPlanbookForBusinessRequestSchema = z
       description: "Business ID",
     }),
     billing_types: z.array(z.string()).openapi({
-      description: "Filter plans by billing type (EndUser, LeaseLine, Business)",
+      description:
+        "Filter plans by billing type (EndUser, LeaseLine, Business)",
     }),
   })
   .openapi({

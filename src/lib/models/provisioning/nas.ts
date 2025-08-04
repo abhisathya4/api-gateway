@@ -237,3 +237,89 @@ export const getNASDeviceResponseSchema = z
     title: "GetNASDeviceResponse",
     description: "Response containing nas devices and pagination metadata",
   });
+
+// NAS device parameters for update
+export const updateDeviceParamsSchema = z
+  .object({
+    id: z.string().uuid().openapi({
+      description: "ID of the NAS device to update",
+      example: "123e4567-e89b-12d3-a456-426614174000",
+    }),
+    nasname: z.string().openapi({
+      description: "Name of the NAS",
+      example: "NAS-01",
+    }),
+    shortname: z.string().openapi({
+      description: "Short name of the NAS",
+      example: "NAS1",
+    }),
+    type: z.string().openapi({
+      description: "Type of the NAS",
+      example: "other",
+    }),
+    ports: z.number().nullable().openapi({
+      description: "Number of ports on the NAS",
+      example: 100,
+    }),
+    secret: z.string().openapi({
+      description: "Secret for the NAS",
+      example: "supersecret",
+    }),
+    server: z.string().nullable().openapi({
+      description: "Server associated with the NAS",
+      example: "server1",
+    }),
+    community: z.string().nullable().openapi({
+      description: "Community string for the NAS",
+      example: "public",
+    }),
+    location: z.string().nullable().optional().openapi({
+      description: "Location of the NAS device",
+      example: "Main NOC",
+    }),
+    active: z.boolean().nullable().optional().openapi({
+      description: "Activity status of the NAS device",
+    }),
+    description: z.string().nullable().optional().openapi({
+      description: "Description of the NAS",
+      example: "Main office NAS",
+    }),
+    require_ma: z.string().nullable().optional().openapi({
+      description: "Require message authenticator",
+    }),
+    limit_proxy_state: z.string().nullable().optional().openapi({
+      description: "Limit proxy state",
+    }),
+    tenant_id: z.string().uuid().optional().openapi({
+      description: "Tenant ID associated with the NAS",
+      example: "123e4567-e89b-12d3-a456-426614174000",
+    }),
+  })
+  .openapi({
+    title: "UpdateDeviceParams",
+    description: "NAS device parameters for update",
+  });
+
+// Request to update an existing NAS device
+export const updateNasDeviceRequestSchema = z
+  .object({
+    device_params: updateDeviceParamsSchema.openapi({
+      description: "NAS device parameters for update",
+    }),
+  })
+  .openapi({
+    title: "UpdateNasDeviceRequest",
+    description: "Request to update an existing NAS device",
+  });
+
+// Response from updating a NAS device
+export const updateNasDeviceResponseSchema = z
+  .object({
+    nas_devices: z.array(nasSchema).openapi({
+      description: "Updated NAS devices",
+    }),
+  })
+  .openapi({
+    title: "UpdateNasDeviceResponse",
+    description: "Response from updating a NAS device",
+  });

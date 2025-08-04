@@ -423,30 +423,58 @@ export const getCustomersWithPlanBusinessAndPlanbookInfoResponseSchema = z
       "Response containing customers with plan, business, and planbook information",
   });
 
-// Request to restore a customer's plan after FUP enforcement
-export const restoreCustomerPlanRequestSchema = z
+// Request to renew or activate a customer's plan after FUP enforcement
+export const renewOrActivateCustomerPlanRequestSchema = z
   .object({
     customer_id: z.string().openapi({
-      description: "Customer ID to restore",
+      description: "Customer ID to renew or activate",
     }),
   })
   .openapi({
-    title: "RestoreCustomerPlanRequest",
-    description: "Request to restore a customer's plan after FUP enforcement",
+    title: "RenewOrActivateCustomerPlanRequest",
+    description: "Request to renew or activate a customer's plan after FUP enforcement",
   });
 
-// Response from restoring customer plan
-export const restoreCustomerPlanResponseSchema = z
+// Response from renewing or activating customer plan
+export const renewOrActivateCustomerPlanResponseSchema = z
   .object({
-    restored_customer: z.array(customerSchema).openapi({
-      description: "Restored customer",
+    renewed_customer: z.array(customerSchema).openapi({
+      description: "Renewed customer",
     }),
     // These will be properly typed when the referenced schemas are defined
-    restored_radusergroups: z.array(radusergroupSchema).openapi({
-      description: "Restored RADIUS user groups",
+    renewed_radusergroups: z.array(radusergroupSchema).openapi({
+      description: "Renewed RADIUS user groups",
     }),
   })
   .openapi({
-    title: "RestoreCustomerPlanResponse",
-    description: "Response from restoring customer plan",
+    title: "RenewOrActivateCustomerPlanResponse",
+    description: "Response from renewing or activating customer plan",
+  });
+
+// Request to deactivate a customer's plan
+export const deactivateCustomerPlanRequestSchema = z
+  .object({
+    customer_id: z.string().openapi({
+      description: "Customer ID to deactivate",
+    }),
+  })
+  .openapi({
+    title: "DeactivateCustomerPlanRequest",
+    description: "Request to deactivate a customer's plan",
+  });
+
+// Response from deactivating customer plan
+export const deactivateCustomerPlanResponseSchema = z
+  .object({
+    deactivated_customer: z.array(customerSchema).openapi({
+      description: "Deactivated customer",
+    }),
+    // These will be properly typed when the referenced schemas are defined
+    deactivated_radusergroups: z.array(radusergroupSchema).openapi({
+      description: "Deactivated RADIUS user groups",
+    }),
+  })
+  .openapi({
+    title: "DeactivateCustomerPlanResponse",
+    description: "Response from deactivating customer plan",
   });
