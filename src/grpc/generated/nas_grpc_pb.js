@@ -63,6 +63,28 @@ function deserialize_nas_SysRegisterNasDeviceRequest(buffer_arg) {
   return nas_pb.SysRegisterNasDeviceRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_nas_UpdateNasDeviceRequest(arg) {
+  if (!(arg instanceof nas_pb.UpdateNasDeviceRequest)) {
+    throw new Error('Expected argument of type nas.UpdateNasDeviceRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_nas_UpdateNasDeviceRequest(buffer_arg) {
+  return nas_pb.UpdateNasDeviceRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_nas_UpdateNasDeviceResponse(arg) {
+  if (!(arg instanceof nas_pb.UpdateNasDeviceResponse)) {
+    throw new Error('Expected argument of type nas.UpdateNasDeviceResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_nas_UpdateNasDeviceResponse(buffer_arg) {
+  return nas_pb.UpdateNasDeviceResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 // NAS service for managing Network Access Server devices
 var NasServiceService = exports.NasServiceService = {
@@ -101,6 +123,18 @@ getNasDevices: {
     requestDeserialize: deserialize_nas_GetNasDevicesRequest,
     responseSerialize: serialize_nas_GetNasDevicesResponse,
     responseDeserialize: deserialize_nas_GetNasDevicesResponse,
+  },
+  // Update a nas device
+updateNasDevice: {
+    path: '/nas.NasService/UpdateNasDevice',
+    requestStream: false,
+    responseStream: false,
+    requestType: nas_pb.UpdateNasDeviceRequest,
+    responseType: nas_pb.UpdateNasDeviceResponse,
+    requestSerialize: serialize_nas_UpdateNasDeviceRequest,
+    requestDeserialize: deserialize_nas_UpdateNasDeviceRequest,
+    responseSerialize: serialize_nas_UpdateNasDeviceResponse,
+    responseDeserialize: deserialize_nas_UpdateNasDeviceResponse,
   },
 };
 

@@ -74,6 +74,28 @@ function deserialize_planbook_GetPlanbookResponse(buffer_arg) {
   return planbook_pb.GetPlanbookResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_planbook_GetPlanbooksFromFiltersRequest(arg) {
+  if (!(arg instanceof planbook_pb.GetPlanbooksFromFiltersRequest)) {
+    throw new Error('Expected argument of type planbook.GetPlanbooksFromFiltersRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetPlanbooksFromFiltersRequest(buffer_arg) {
+  return planbook_pb.GetPlanbooksFromFiltersRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_planbook_GetPlanbooksFromFiltersResponse(arg) {
+  if (!(arg instanceof planbook_pb.GetPlanbooksFromFiltersResponse)) {
+    throw new Error('Expected argument of type planbook.GetPlanbooksFromFiltersResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_planbook_GetPlanbooksFromFiltersResponse(buffer_arg) {
+  return planbook_pb.GetPlanbooksFromFiltersResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_planbook_GetPlanbooksRequest(arg) {
   if (!(arg instanceof planbook_pb.GetPlanbooksRequest)) {
     throw new Error('Expected argument of type planbook.GetPlanbooksRequest');
@@ -214,6 +236,18 @@ getPlansPlanbookForBusiness: {
     requestDeserialize: deserialize_planbook_GetPlansPlanbookForBusinessRequest,
     responseSerialize: serialize_planbook_GetPlansPlanbookForBusinessResponse,
     responseDeserialize: deserialize_planbook_GetPlansPlanbookForBusinessResponse,
+  },
+  // Get planbooks from filters
+getPlanbooksFromFilters: {
+    path: '/planbook.PlanbookService/GetPlanbooksFromFilters',
+    requestStream: false,
+    responseStream: false,
+    requestType: planbook_pb.GetPlanbooksFromFiltersRequest,
+    responseType: planbook_pb.GetPlanbooksFromFiltersResponse,
+    requestSerialize: serialize_planbook_GetPlanbooksFromFiltersRequest,
+    requestDeserialize: deserialize_planbook_GetPlanbooksFromFiltersRequest,
+    responseSerialize: serialize_planbook_GetPlanbooksFromFiltersResponse,
+    responseDeserialize: deserialize_planbook_GetPlanbooksFromFiltersResponse,
   },
 };
 

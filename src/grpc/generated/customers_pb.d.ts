@@ -735,55 +735,214 @@ export namespace GetCustomerResponse {
     }
 }
 
-export class RestoreCustomerPlanRequest extends jspb.Message { 
+export class AuthRenewOrActivateCustomerRequest extends jspb.Message { 
 
     hasAuthContext(): boolean;
     clearAuthContext(): void;
     getAuthContext(): common_pb.AuthContext | undefined;
-    setAuthContext(value?: common_pb.AuthContext): RestoreCustomerPlanRequest;
+    setAuthContext(value?: common_pb.AuthContext): AuthRenewOrActivateCustomerRequest;
     getCustomerId(): string;
-    setCustomerId(value: string): RestoreCustomerPlanRequest;
+    setCustomerId(value: string): AuthRenewOrActivateCustomerRequest;
+
+    hasLastRenewDate(): boolean;
+    clearLastRenewDate(): void;
+    getLastRenewDate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+    setLastRenewDate(value?: google_protobuf_timestamp_pb.Timestamp): AuthRenewOrActivateCustomerRequest;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): RestoreCustomerPlanRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: RestoreCustomerPlanRequest): RestoreCustomerPlanRequest.AsObject;
+    toObject(includeInstance?: boolean): AuthRenewOrActivateCustomerRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: AuthRenewOrActivateCustomerRequest): AuthRenewOrActivateCustomerRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: RestoreCustomerPlanRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): RestoreCustomerPlanRequest;
-    static deserializeBinaryFromReader(message: RestoreCustomerPlanRequest, reader: jspb.BinaryReader): RestoreCustomerPlanRequest;
+    static serializeBinaryToWriter(message: AuthRenewOrActivateCustomerRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AuthRenewOrActivateCustomerRequest;
+    static deserializeBinaryFromReader(message: AuthRenewOrActivateCustomerRequest, reader: jspb.BinaryReader): AuthRenewOrActivateCustomerRequest;
 }
 
-export namespace RestoreCustomerPlanRequest {
+export namespace AuthRenewOrActivateCustomerRequest {
+    export type AsObject = {
+        authContext?: common_pb.AuthContext.AsObject,
+        customerId: string,
+        lastRenewDate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    }
+}
+
+export class AuthRenewOrActivateCustomerResponse extends jspb.Message { 
+    clearRenewedCustomerList(): void;
+    getRenewedCustomerList(): Array<Customer>;
+    setRenewedCustomerList(value: Array<Customer>): AuthRenewOrActivateCustomerResponse;
+    addRenewedCustomer(value?: Customer, index?: number): Customer;
+    clearRenewedRadusergroupsList(): void;
+    getRenewedRadusergroupsList(): Array<radius_pb.Radusergroup>;
+    setRenewedRadusergroupsList(value: Array<radius_pb.Radusergroup>): AuthRenewOrActivateCustomerResponse;
+    addRenewedRadusergroups(value?: radius_pb.Radusergroup, index?: number): radius_pb.Radusergroup;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AuthRenewOrActivateCustomerResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: AuthRenewOrActivateCustomerResponse): AuthRenewOrActivateCustomerResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AuthRenewOrActivateCustomerResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AuthRenewOrActivateCustomerResponse;
+    static deserializeBinaryFromReader(message: AuthRenewOrActivateCustomerResponse, reader: jspb.BinaryReader): AuthRenewOrActivateCustomerResponse;
+}
+
+export namespace AuthRenewOrActivateCustomerResponse {
+    export type AsObject = {
+        renewedCustomerList: Array<Customer.AsObject>,
+        renewedRadusergroupsList: Array<radius_pb.Radusergroup.AsObject>,
+    }
+}
+
+export class SysRenewOrActivateCustomerRequest extends jspb.Message { 
+    getCustomerId(): string;
+    setCustomerId(value: string): SysRenewOrActivateCustomerRequest;
+
+    hasLastRenewDate(): boolean;
+    clearLastRenewDate(): void;
+    getLastRenewDate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+    setLastRenewDate(value?: google_protobuf_timestamp_pb.Timestamp): SysRenewOrActivateCustomerRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SysRenewOrActivateCustomerRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: SysRenewOrActivateCustomerRequest): SysRenewOrActivateCustomerRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SysRenewOrActivateCustomerRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SysRenewOrActivateCustomerRequest;
+    static deserializeBinaryFromReader(message: SysRenewOrActivateCustomerRequest, reader: jspb.BinaryReader): SysRenewOrActivateCustomerRequest;
+}
+
+export namespace SysRenewOrActivateCustomerRequest {
+    export type AsObject = {
+        customerId: string,
+        lastRenewDate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    }
+}
+
+export class SysRenewOrActivateCustomerResponse extends jspb.Message { 
+    clearRenewedCustomerList(): void;
+    getRenewedCustomerList(): Array<Customer>;
+    setRenewedCustomerList(value: Array<Customer>): SysRenewOrActivateCustomerResponse;
+    addRenewedCustomer(value?: Customer, index?: number): Customer;
+    clearRenewedRadusergroupsList(): void;
+    getRenewedRadusergroupsList(): Array<radius_pb.Radusergroup>;
+    setRenewedRadusergroupsList(value: Array<radius_pb.Radusergroup>): SysRenewOrActivateCustomerResponse;
+    addRenewedRadusergroups(value?: radius_pb.Radusergroup, index?: number): radius_pb.Radusergroup;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SysRenewOrActivateCustomerResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: SysRenewOrActivateCustomerResponse): SysRenewOrActivateCustomerResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SysRenewOrActivateCustomerResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SysRenewOrActivateCustomerResponse;
+    static deserializeBinaryFromReader(message: SysRenewOrActivateCustomerResponse, reader: jspb.BinaryReader): SysRenewOrActivateCustomerResponse;
+}
+
+export namespace SysRenewOrActivateCustomerResponse {
+    export type AsObject = {
+        renewedCustomerList: Array<Customer.AsObject>,
+        renewedRadusergroupsList: Array<radius_pb.Radusergroup.AsObject>,
+    }
+}
+
+export class AuthDeactivateCustomerRequest extends jspb.Message { 
+
+    hasAuthContext(): boolean;
+    clearAuthContext(): void;
+    getAuthContext(): common_pb.AuthContext | undefined;
+    setAuthContext(value?: common_pb.AuthContext): AuthDeactivateCustomerRequest;
+    getCustomerId(): string;
+    setCustomerId(value: string): AuthDeactivateCustomerRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AuthDeactivateCustomerRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: AuthDeactivateCustomerRequest): AuthDeactivateCustomerRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AuthDeactivateCustomerRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AuthDeactivateCustomerRequest;
+    static deserializeBinaryFromReader(message: AuthDeactivateCustomerRequest, reader: jspb.BinaryReader): AuthDeactivateCustomerRequest;
+}
+
+export namespace AuthDeactivateCustomerRequest {
     export type AsObject = {
         authContext?: common_pb.AuthContext.AsObject,
         customerId: string,
     }
 }
 
-export class RestoreCustomerPlanResponse extends jspb.Message { 
-    clearRestoredCustomerList(): void;
-    getRestoredCustomerList(): Array<Customer>;
-    setRestoredCustomerList(value: Array<Customer>): RestoreCustomerPlanResponse;
-    addRestoredCustomer(value?: Customer, index?: number): Customer;
-    clearRestoredRadusergroupsList(): void;
-    getRestoredRadusergroupsList(): Array<radius_pb.Radusergroup>;
-    setRestoredRadusergroupsList(value: Array<radius_pb.Radusergroup>): RestoreCustomerPlanResponse;
-    addRestoredRadusergroups(value?: radius_pb.Radusergroup, index?: number): radius_pb.Radusergroup;
+export class AuthDeactivateCustomerResponse extends jspb.Message { 
+    clearDeactivatedCustomerList(): void;
+    getDeactivatedCustomerList(): Array<Customer>;
+    setDeactivatedCustomerList(value: Array<Customer>): AuthDeactivateCustomerResponse;
+    addDeactivatedCustomer(value?: Customer, index?: number): Customer;
+    clearDeactivatedRadusergroupsList(): void;
+    getDeactivatedRadusergroupsList(): Array<radius_pb.Radusergroup>;
+    setDeactivatedRadusergroupsList(value: Array<radius_pb.Radusergroup>): AuthDeactivateCustomerResponse;
+    addDeactivatedRadusergroups(value?: radius_pb.Radusergroup, index?: number): radius_pb.Radusergroup;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): RestoreCustomerPlanResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: RestoreCustomerPlanResponse): RestoreCustomerPlanResponse.AsObject;
+    toObject(includeInstance?: boolean): AuthDeactivateCustomerResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: AuthDeactivateCustomerResponse): AuthDeactivateCustomerResponse.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: RestoreCustomerPlanResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): RestoreCustomerPlanResponse;
-    static deserializeBinaryFromReader(message: RestoreCustomerPlanResponse, reader: jspb.BinaryReader): RestoreCustomerPlanResponse;
+    static serializeBinaryToWriter(message: AuthDeactivateCustomerResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AuthDeactivateCustomerResponse;
+    static deserializeBinaryFromReader(message: AuthDeactivateCustomerResponse, reader: jspb.BinaryReader): AuthDeactivateCustomerResponse;
 }
 
-export namespace RestoreCustomerPlanResponse {
+export namespace AuthDeactivateCustomerResponse {
     export type AsObject = {
-        restoredCustomerList: Array<Customer.AsObject>,
-        restoredRadusergroupsList: Array<radius_pb.Radusergroup.AsObject>,
+        deactivatedCustomerList: Array<Customer.AsObject>,
+        deactivatedRadusergroupsList: Array<radius_pb.Radusergroup.AsObject>,
+    }
+}
+
+export class SysDeactivateCustomerRequest extends jspb.Message { 
+    getCustomerId(): string;
+    setCustomerId(value: string): SysDeactivateCustomerRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SysDeactivateCustomerRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: SysDeactivateCustomerRequest): SysDeactivateCustomerRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SysDeactivateCustomerRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SysDeactivateCustomerRequest;
+    static deserializeBinaryFromReader(message: SysDeactivateCustomerRequest, reader: jspb.BinaryReader): SysDeactivateCustomerRequest;
+}
+
+export namespace SysDeactivateCustomerRequest {
+    export type AsObject = {
+        customerId: string,
+    }
+}
+
+export class SysDeactivateCustomerResponse extends jspb.Message { 
+    clearDeactivatedCustomerList(): void;
+    getDeactivatedCustomerList(): Array<Customer>;
+    setDeactivatedCustomerList(value: Array<Customer>): SysDeactivateCustomerResponse;
+    addDeactivatedCustomer(value?: Customer, index?: number): Customer;
+    clearDeactivatedRadusergroupsList(): void;
+    getDeactivatedRadusergroupsList(): Array<radius_pb.Radusergroup>;
+    setDeactivatedRadusergroupsList(value: Array<radius_pb.Radusergroup>): SysDeactivateCustomerResponse;
+    addDeactivatedRadusergroups(value?: radius_pb.Radusergroup, index?: number): radius_pb.Radusergroup;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SysDeactivateCustomerResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: SysDeactivateCustomerResponse): SysDeactivateCustomerResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SysDeactivateCustomerResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SysDeactivateCustomerResponse;
+    static deserializeBinaryFromReader(message: SysDeactivateCustomerResponse, reader: jspb.BinaryReader): SysDeactivateCustomerResponse;
+}
+
+export namespace SysDeactivateCustomerResponse {
+    export type AsObject = {
+        deactivatedCustomerList: Array<Customer.AsObject>,
+        deactivatedRadusergroupsList: Array<radius_pb.Radusergroup.AsObject>,
     }
 }

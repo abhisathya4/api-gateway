@@ -16,6 +16,7 @@ interface IPlanbookServiceService extends grpc.ServiceDefinition<grpc.UntypedSer
     getPlanbooks: IPlanbookServiceService_IGetPlanbooks;
     getBusinessesPlanbookForPlan: IPlanbookServiceService_IGetBusinessesPlanbookForPlan;
     getPlansPlanbookForBusiness: IPlanbookServiceService_IGetPlansPlanbookForBusiness;
+    getPlanbooksFromFilters: IPlanbookServiceService_IGetPlanbooksFromFilters;
 }
 
 interface IPlanbookServiceService_ICreatePlanbook extends grpc.MethodDefinition<planbook_pb.CreatePlanbookRequest, planbook_pb.CreatePlanbookResponse> {
@@ -72,6 +73,15 @@ interface IPlanbookServiceService_IGetPlansPlanbookForBusiness extends grpc.Meth
     responseSerialize: grpc.serialize<planbook_pb.GetPlansPlanbookForBusinessResponse>;
     responseDeserialize: grpc.deserialize<planbook_pb.GetPlansPlanbookForBusinessResponse>;
 }
+interface IPlanbookServiceService_IGetPlanbooksFromFilters extends grpc.MethodDefinition<planbook_pb.GetPlanbooksFromFiltersRequest, planbook_pb.GetPlanbooksFromFiltersResponse> {
+    path: "/planbook.PlanbookService/GetPlanbooksFromFilters";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<planbook_pb.GetPlanbooksFromFiltersRequest>;
+    requestDeserialize: grpc.deserialize<planbook_pb.GetPlanbooksFromFiltersRequest>;
+    responseSerialize: grpc.serialize<planbook_pb.GetPlanbooksFromFiltersResponse>;
+    responseDeserialize: grpc.deserialize<planbook_pb.GetPlanbooksFromFiltersResponse>;
+}
 
 export const PlanbookServiceService: IPlanbookServiceService;
 
@@ -82,6 +92,7 @@ export interface IPlanbookServiceServer extends grpc.UntypedServiceImplementatio
     getPlanbooks: grpc.handleUnaryCall<planbook_pb.GetPlanbooksRequest, planbook_pb.GetPlanbooksResponse>;
     getBusinessesPlanbookForPlan: grpc.handleUnaryCall<planbook_pb.GetBusinessesPlanbookForPlanRequest, planbook_pb.GetBusinessesPlanbookForPlanResponse>;
     getPlansPlanbookForBusiness: grpc.handleUnaryCall<planbook_pb.GetPlansPlanbookForBusinessRequest, planbook_pb.GetPlansPlanbookForBusinessResponse>;
+    getPlanbooksFromFilters: grpc.handleUnaryCall<planbook_pb.GetPlanbooksFromFiltersRequest, planbook_pb.GetPlanbooksFromFiltersResponse>;
 }
 
 export interface IPlanbookServiceClient {
@@ -103,6 +114,9 @@ export interface IPlanbookServiceClient {
     getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
     getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
     getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
+    getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
+    getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
+    getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class PlanbookServiceClient extends grpc.Client implements IPlanbookServiceClient {
@@ -125,4 +139,7 @@ export class PlanbookServiceClient extends grpc.Client implements IPlanbookServi
     public getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
     public getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
     public getPlansPlanbookForBusiness(request: planbook_pb.GetPlansPlanbookForBusinessRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlansPlanbookForBusinessResponse) => void): grpc.ClientUnaryCall;
+    public getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
+    public getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
+    public getPlanbooksFromFilters(request: planbook_pb.GetPlanbooksFromFiltersRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: planbook_pb.GetPlanbooksFromFiltersResponse) => void): grpc.ClientUnaryCall;
 }

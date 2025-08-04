@@ -13,6 +13,7 @@ interface INasServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceI
     registerNasDevice: INasServiceService_IRegisterNasDevice;
     sysRegisterNasDevice: INasServiceService_ISysRegisterNasDevice;
     getNasDevices: INasServiceService_IGetNasDevices;
+    updateNasDevice: INasServiceService_IUpdateNasDevice;
 }
 
 interface INasServiceService_IRegisterNasDevice extends grpc.MethodDefinition<nas_pb.RegisterNasDeviceRequest, nas_pb.RegisterNasDeviceResponse> {
@@ -42,6 +43,15 @@ interface INasServiceService_IGetNasDevices extends grpc.MethodDefinition<nas_pb
     responseSerialize: grpc.serialize<nas_pb.GetNasDevicesResponse>;
     responseDeserialize: grpc.deserialize<nas_pb.GetNasDevicesResponse>;
 }
+interface INasServiceService_IUpdateNasDevice extends grpc.MethodDefinition<nas_pb.UpdateNasDeviceRequest, nas_pb.UpdateNasDeviceResponse> {
+    path: "/nas.NasService/UpdateNasDevice";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<nas_pb.UpdateNasDeviceRequest>;
+    requestDeserialize: grpc.deserialize<nas_pb.UpdateNasDeviceRequest>;
+    responseSerialize: grpc.serialize<nas_pb.UpdateNasDeviceResponse>;
+    responseDeserialize: grpc.deserialize<nas_pb.UpdateNasDeviceResponse>;
+}
 
 export const NasServiceService: INasServiceService;
 
@@ -49,6 +59,7 @@ export interface INasServiceServer extends grpc.UntypedServiceImplementation {
     registerNasDevice: grpc.handleUnaryCall<nas_pb.RegisterNasDeviceRequest, nas_pb.RegisterNasDeviceResponse>;
     sysRegisterNasDevice: grpc.handleUnaryCall<nas_pb.SysRegisterNasDeviceRequest, nas_pb.RegisterNasDeviceResponse>;
     getNasDevices: grpc.handleUnaryCall<nas_pb.GetNasDevicesRequest, nas_pb.GetNasDevicesResponse>;
+    updateNasDevice: grpc.handleUnaryCall<nas_pb.UpdateNasDeviceRequest, nas_pb.UpdateNasDeviceResponse>;
 }
 
 export interface INasServiceClient {
@@ -61,6 +72,9 @@ export interface INasServiceClient {
     getNasDevices(request: nas_pb.GetNasDevicesRequest, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
     getNasDevices(request: nas_pb.GetNasDevicesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
     getNasDevices(request: nas_pb.GetNasDevicesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
+    updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
+    updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
+    updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class NasServiceClient extends grpc.Client implements INasServiceClient {
@@ -74,4 +88,7 @@ export class NasServiceClient extends grpc.Client implements INasServiceClient {
     public getNasDevices(request: nas_pb.GetNasDevicesRequest, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
     public getNasDevices(request: nas_pb.GetNasDevicesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
     public getNasDevices(request: nas_pb.GetNasDevicesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: nas_pb.GetNasDevicesResponse) => void): grpc.ClientUnaryCall;
+    public updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
+    public updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
+    public updateNasDevice(request: nas_pb.UpdateNasDeviceRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: nas_pb.UpdateNasDeviceResponse) => void): grpc.ClientUnaryCall;
 }

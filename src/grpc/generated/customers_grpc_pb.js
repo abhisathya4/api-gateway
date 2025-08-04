@@ -9,6 +9,50 @@ var common_pb = require('./common_pb.js');
 var radius_pb = require('./radius_pb.js');
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 
+function serialize_customers_AuthDeactivateCustomerRequest(arg) {
+  if (!(arg instanceof customers_pb.AuthDeactivateCustomerRequest)) {
+    throw new Error('Expected argument of type customers.AuthDeactivateCustomerRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_AuthDeactivateCustomerRequest(buffer_arg) {
+  return customers_pb.AuthDeactivateCustomerRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_AuthDeactivateCustomerResponse(arg) {
+  if (!(arg instanceof customers_pb.AuthDeactivateCustomerResponse)) {
+    throw new Error('Expected argument of type customers.AuthDeactivateCustomerResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_AuthDeactivateCustomerResponse(buffer_arg) {
+  return customers_pb.AuthDeactivateCustomerResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_AuthRenewOrActivateCustomerRequest(arg) {
+  if (!(arg instanceof customers_pb.AuthRenewOrActivateCustomerRequest)) {
+    throw new Error('Expected argument of type customers.AuthRenewOrActivateCustomerRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_AuthRenewOrActivateCustomerRequest(buffer_arg) {
+  return customers_pb.AuthRenewOrActivateCustomerRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_AuthRenewOrActivateCustomerResponse(arg) {
+  if (!(arg instanceof customers_pb.AuthRenewOrActivateCustomerResponse)) {
+    throw new Error('Expected argument of type customers.AuthRenewOrActivateCustomerResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_AuthRenewOrActivateCustomerResponse(buffer_arg) {
+  return customers_pb.AuthRenewOrActivateCustomerResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_customers_CreateCustomerRequest(arg) {
   if (!(arg instanceof customers_pb.CreateCustomerRequest)) {
     throw new Error('Expected argument of type customers.CreateCustomerRequest');
@@ -97,26 +141,48 @@ function deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRespon
   return customers_pb.GetCustomersWithPlanBusinessAndPlanbookInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_customers_RestoreCustomerPlanRequest(arg) {
-  if (!(arg instanceof customers_pb.RestoreCustomerPlanRequest)) {
-    throw new Error('Expected argument of type customers.RestoreCustomerPlanRequest');
+function serialize_customers_SysDeactivateCustomerRequest(arg) {
+  if (!(arg instanceof customers_pb.SysDeactivateCustomerRequest)) {
+    throw new Error('Expected argument of type customers.SysDeactivateCustomerRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_customers_RestoreCustomerPlanRequest(buffer_arg) {
-  return customers_pb.RestoreCustomerPlanRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_customers_SysDeactivateCustomerRequest(buffer_arg) {
+  return customers_pb.SysDeactivateCustomerRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_customers_RestoreCustomerPlanResponse(arg) {
-  if (!(arg instanceof customers_pb.RestoreCustomerPlanResponse)) {
-    throw new Error('Expected argument of type customers.RestoreCustomerPlanResponse');
+function serialize_customers_SysDeactivateCustomerResponse(arg) {
+  if (!(arg instanceof customers_pb.SysDeactivateCustomerResponse)) {
+    throw new Error('Expected argument of type customers.SysDeactivateCustomerResponse');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_customers_RestoreCustomerPlanResponse(buffer_arg) {
-  return customers_pb.RestoreCustomerPlanResponse.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_customers_SysDeactivateCustomerResponse(buffer_arg) {
+  return customers_pb.SysDeactivateCustomerResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_SysRenewOrActivateCustomerRequest(arg) {
+  if (!(arg instanceof customers_pb.SysRenewOrActivateCustomerRequest)) {
+    throw new Error('Expected argument of type customers.SysRenewOrActivateCustomerRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_SysRenewOrActivateCustomerRequest(buffer_arg) {
+  return customers_pb.SysRenewOrActivateCustomerRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_customers_SysRenewOrActivateCustomerResponse(arg) {
+  if (!(arg instanceof customers_pb.SysRenewOrActivateCustomerResponse)) {
+    throw new Error('Expected argument of type customers.SysRenewOrActivateCustomerResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_customers_SysRenewOrActivateCustomerResponse(buffer_arg) {
+  return customers_pb.SysRenewOrActivateCustomerResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_customers_UpdateCustomerDetailsRequest(arg) {
@@ -226,18 +292,6 @@ getCustomers: {
     responseSerialize: serialize_customers_GetCustomersResponse,
     responseDeserialize: deserialize_customers_GetCustomersResponse,
   },
-  // Restore a customer's plan after FUP enforcement
-restoreCustomerPlan: {
-    path: '/customers.CustomerService/RestoreCustomerPlan',
-    requestStream: false,
-    responseStream: false,
-    requestType: customers_pb.RestoreCustomerPlanRequest,
-    responseType: customers_pb.RestoreCustomerPlanResponse,
-    requestSerialize: serialize_customers_RestoreCustomerPlanRequest,
-    requestDeserialize: deserialize_customers_RestoreCustomerPlanRequest,
-    responseSerialize: serialize_customers_RestoreCustomerPlanResponse,
-    responseDeserialize: deserialize_customers_RestoreCustomerPlanResponse,
-  },
   // Get customers with plan, business, and planbook information with filtering and pagination
 getCustomersWithPlanBusinessAndPlanbookInfo: {
     path: '/customers.CustomerService/GetCustomersWithPlanBusinessAndPlanbookInfo',
@@ -249,6 +303,54 @@ getCustomersWithPlanBusinessAndPlanbookInfo: {
     requestDeserialize: deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoRequest,
     responseSerialize: serialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse,
     responseDeserialize: deserialize_customers_GetCustomersWithPlanBusinessAndPlanbookInfoResponse,
+  },
+  // Renew or activate a customer - initiated by user
+authRenewOrActivateCustomer: {
+    path: '/customers.CustomerService/AuthRenewOrActivateCustomer',
+    requestStream: false,
+    responseStream: false,
+    requestType: customers_pb.AuthRenewOrActivateCustomerRequest,
+    responseType: customers_pb.AuthRenewOrActivateCustomerResponse,
+    requestSerialize: serialize_customers_AuthRenewOrActivateCustomerRequest,
+    requestDeserialize: deserialize_customers_AuthRenewOrActivateCustomerRequest,
+    responseSerialize: serialize_customers_AuthRenewOrActivateCustomerResponse,
+    responseDeserialize: deserialize_customers_AuthRenewOrActivateCustomerResponse,
+  },
+  // Deactivate a customer - initiated by user
+authDeactivateCustomer: {
+    path: '/customers.CustomerService/AuthDeactivateCustomer',
+    requestStream: false,
+    responseStream: false,
+    requestType: customers_pb.AuthDeactivateCustomerRequest,
+    responseType: customers_pb.AuthDeactivateCustomerResponse,
+    requestSerialize: serialize_customers_AuthDeactivateCustomerRequest,
+    requestDeserialize: deserialize_customers_AuthDeactivateCustomerRequest,
+    responseSerialize: serialize_customers_AuthDeactivateCustomerResponse,
+    responseDeserialize: deserialize_customers_AuthDeactivateCustomerResponse,
+  },
+  // Renew or activate a customer - initiated by system
+sysRenewOrActivateCustomer: {
+    path: '/customers.CustomerService/SysRenewOrActivateCustomer',
+    requestStream: false,
+    responseStream: false,
+    requestType: customers_pb.SysRenewOrActivateCustomerRequest,
+    responseType: customers_pb.SysRenewOrActivateCustomerResponse,
+    requestSerialize: serialize_customers_SysRenewOrActivateCustomerRequest,
+    requestDeserialize: deserialize_customers_SysRenewOrActivateCustomerRequest,
+    responseSerialize: serialize_customers_SysRenewOrActivateCustomerResponse,
+    responseDeserialize: deserialize_customers_SysRenewOrActivateCustomerResponse,
+  },
+  // Deactivate a customer - initiated by system
+sysDeactivateCustomer: {
+    path: '/customers.CustomerService/SysDeactivateCustomer',
+    requestStream: false,
+    responseStream: false,
+    requestType: customers_pb.SysDeactivateCustomerRequest,
+    responseType: customers_pb.SysDeactivateCustomerResponse,
+    requestSerialize: serialize_customers_SysDeactivateCustomerRequest,
+    requestDeserialize: deserialize_customers_SysDeactivateCustomerRequest,
+    responseSerialize: serialize_customers_SysDeactivateCustomerResponse,
+    responseDeserialize: deserialize_customers_SysDeactivateCustomerResponse,
   },
 };
 

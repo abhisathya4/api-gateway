@@ -482,7 +482,10 @@ export class GetBusinessesPlanbookForPlanRequest extends jspb.Message {
     clearAuthContext(): void;
     getAuthContext(): common_pb.AuthContext | undefined;
     setAuthContext(value?: common_pb.AuthContext): GetBusinessesPlanbookForPlanRequest;
-    getPlanId(): string;
+
+    hasPlanId(): boolean;
+    clearPlanId(): void;
+    getPlanId(): string | undefined;
     setPlanId(value: string): GetBusinessesPlanbookForPlanRequest;
     getLimit(): number;
     setLimit(value: number): GetBusinessesPlanbookForPlanRequest;
@@ -515,7 +518,7 @@ export class GetBusinessesPlanbookForPlanRequest extends jspb.Message {
 export namespace GetBusinessesPlanbookForPlanRequest {
     export type AsObject = {
         authContext?: common_pb.AuthContext.AsObject,
-        planId: string,
+        planId?: string,
         limit: number,
         offset: number,
         search?: string,
@@ -637,7 +640,10 @@ export class GetPlansPlanbookForBusinessRequest extends jspb.Message {
     getBillingTypesList(): Array<string>;
     setBillingTypesList(value: Array<string>): GetPlansPlanbookForBusinessRequest;
     addBillingTypes(value: string, index?: number): string;
-    getBusinessId(): string;
+
+    hasBusinessId(): boolean;
+    clearBusinessId(): void;
+    getBusinessId(): string | undefined;
     setBusinessId(value: string): GetPlansPlanbookForBusinessRequest;
 
     serializeBinary(): Uint8Array;
@@ -658,7 +664,7 @@ export namespace GetPlansPlanbookForBusinessRequest {
         search: string,
         typesList: Array<string>,
         billingTypesList: Array<string>,
-        businessId: string,
+        businessId?: string,
     }
 }
 
@@ -686,6 +692,93 @@ export class GetPlansPlanbookForBusinessResponse extends jspb.Message {
 export namespace GetPlansPlanbookForBusinessResponse {
     export type AsObject = {
         plansList: Array<PlansPlanbookForBusiness.AsObject>,
+        meta?: common_pb.PaginationMeta.AsObject,
+    }
+}
+
+export class GetPlanbooksFromFiltersRequest extends jspb.Message { 
+
+    hasAuthContext(): boolean;
+    clearAuthContext(): void;
+    getAuthContext(): common_pb.AuthContext | undefined;
+    setAuthContext(value?: common_pb.AuthContext): GetPlanbooksFromFiltersRequest;
+    getLimit(): number;
+    setLimit(value: number): GetPlanbooksFromFiltersRequest;
+    getOffset(): number;
+    setOffset(value: number): GetPlanbooksFromFiltersRequest;
+
+    hasPlanId(): boolean;
+    clearPlanId(): void;
+    getPlanId(): string | undefined;
+    setPlanId(value: string): GetPlanbooksFromFiltersRequest;
+
+    hasBusinessId(): boolean;
+    clearBusinessId(): void;
+    getBusinessId(): string | undefined;
+    setBusinessId(value: string): GetPlanbooksFromFiltersRequest;
+
+    hasPeriod(): boolean;
+    clearPeriod(): void;
+    getPeriod(): string | undefined;
+    setPeriod(value: string): GetPlanbooksFromFiltersRequest;
+
+    hasPrice(): boolean;
+    clearPrice(): void;
+    getPrice(): string | undefined;
+    setPrice(value: string): GetPlanbooksFromFiltersRequest;
+
+    hasBillingType(): boolean;
+    clearBillingType(): void;
+    getBillingType(): string | undefined;
+    setBillingType(value: string): GetPlanbooksFromFiltersRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetPlanbooksFromFiltersRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetPlanbooksFromFiltersRequest): GetPlanbooksFromFiltersRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetPlanbooksFromFiltersRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetPlanbooksFromFiltersRequest;
+    static deserializeBinaryFromReader(message: GetPlanbooksFromFiltersRequest, reader: jspb.BinaryReader): GetPlanbooksFromFiltersRequest;
+}
+
+export namespace GetPlanbooksFromFiltersRequest {
+    export type AsObject = {
+        authContext?: common_pb.AuthContext.AsObject,
+        limit: number,
+        offset: number,
+        planId?: string,
+        businessId?: string,
+        period?: string,
+        price?: string,
+        billingType?: string,
+    }
+}
+
+export class GetPlanbooksFromFiltersResponse extends jspb.Message { 
+    clearPlanbooksList(): void;
+    getPlanbooksList(): Array<Planbook>;
+    setPlanbooksList(value: Array<Planbook>): GetPlanbooksFromFiltersResponse;
+    addPlanbooks(value?: Planbook, index?: number): Planbook;
+
+    hasMeta(): boolean;
+    clearMeta(): void;
+    getMeta(): common_pb.PaginationMeta | undefined;
+    setMeta(value?: common_pb.PaginationMeta): GetPlanbooksFromFiltersResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetPlanbooksFromFiltersResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: GetPlanbooksFromFiltersResponse): GetPlanbooksFromFiltersResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetPlanbooksFromFiltersResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetPlanbooksFromFiltersResponse;
+    static deserializeBinaryFromReader(message: GetPlanbooksFromFiltersResponse, reader: jspb.BinaryReader): GetPlanbooksFromFiltersResponse;
+}
+
+export namespace GetPlanbooksFromFiltersResponse {
+    export type AsObject = {
+        planbooksList: Array<Planbook.AsObject>,
         meta?: common_pb.PaginationMeta.AsObject,
     }
 }

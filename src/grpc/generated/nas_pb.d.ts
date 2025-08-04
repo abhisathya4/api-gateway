@@ -505,3 +505,142 @@ export namespace GetNasDevicesResponse {
         meta?: common_pb.PaginationMeta.AsObject,
     }
 }
+
+export class UpdateNasDeviceRequest extends jspb.Message { 
+
+    hasAuthContext(): boolean;
+    clearAuthContext(): void;
+    getAuthContext(): common_pb.AuthContext | undefined;
+    setAuthContext(value?: common_pb.AuthContext): UpdateNasDeviceRequest;
+
+    hasDeviceParams(): boolean;
+    clearDeviceParams(): void;
+    getDeviceParams(): UpdateNasDeviceRequest.DeviceParams | undefined;
+    setDeviceParams(value?: UpdateNasDeviceRequest.DeviceParams): UpdateNasDeviceRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateNasDeviceRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateNasDeviceRequest): UpdateNasDeviceRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateNasDeviceRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateNasDeviceRequest;
+    static deserializeBinaryFromReader(message: UpdateNasDeviceRequest, reader: jspb.BinaryReader): UpdateNasDeviceRequest;
+}
+
+export namespace UpdateNasDeviceRequest {
+    export type AsObject = {
+        authContext?: common_pb.AuthContext.AsObject,
+        deviceParams?: UpdateNasDeviceRequest.DeviceParams.AsObject,
+    }
+
+
+    export class DeviceParams extends jspb.Message { 
+        getId(): string;
+        setId(value: string): DeviceParams;
+        getNasname(): string;
+        setNasname(value: string): DeviceParams;
+        getShortname(): string;
+        setShortname(value: string): DeviceParams;
+        getType(): string;
+        setType(value: string): DeviceParams;
+
+        hasPorts(): boolean;
+        clearPorts(): void;
+        getPorts(): number | undefined;
+        setPorts(value: number): DeviceParams;
+        getSecret(): string;
+        setSecret(value: string): DeviceParams;
+
+        hasServer(): boolean;
+        clearServer(): void;
+        getServer(): string | undefined;
+        setServer(value: string): DeviceParams;
+
+        hasCommunity(): boolean;
+        clearCommunity(): void;
+        getCommunity(): string | undefined;
+        setCommunity(value: string): DeviceParams;
+
+        hasDescription(): boolean;
+        clearDescription(): void;
+        getDescription(): string | undefined;
+        setDescription(value: string): DeviceParams;
+
+        hasLocation(): boolean;
+        clearLocation(): void;
+        getLocation(): string | undefined;
+        setLocation(value: string): DeviceParams;
+
+        hasActive(): boolean;
+        clearActive(): void;
+        getActive(): boolean | undefined;
+        setActive(value: boolean): DeviceParams;
+
+        hasRequireMa(): boolean;
+        clearRequireMa(): void;
+        getRequireMa(): string | undefined;
+        setRequireMa(value: string): DeviceParams;
+
+        hasLimitProxyState(): boolean;
+        clearLimitProxyState(): void;
+        getLimitProxyState(): string | undefined;
+        setLimitProxyState(value: string): DeviceParams;
+
+        hasTenantId(): boolean;
+        clearTenantId(): void;
+        getTenantId(): string | undefined;
+        setTenantId(value: string): DeviceParams;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): DeviceParams.AsObject;
+        static toObject(includeInstance: boolean, msg: DeviceParams): DeviceParams.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: DeviceParams, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): DeviceParams;
+        static deserializeBinaryFromReader(message: DeviceParams, reader: jspb.BinaryReader): DeviceParams;
+    }
+
+    export namespace DeviceParams {
+        export type AsObject = {
+            id: string,
+            nasname: string,
+            shortname: string,
+            type: string,
+            ports?: number,
+            secret: string,
+            server?: string,
+            community?: string,
+            description?: string,
+            location?: string,
+            active?: boolean,
+            requireMa?: string,
+            limitProxyState?: string,
+            tenantId?: string,
+        }
+    }
+
+}
+
+export class UpdateNasDeviceResponse extends jspb.Message { 
+    clearNasDevicesList(): void;
+    getNasDevicesList(): Array<Nas>;
+    setNasDevicesList(value: Array<Nas>): UpdateNasDeviceResponse;
+    addNasDevices(value?: Nas, index?: number): Nas;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateNasDeviceResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateNasDeviceResponse): UpdateNasDeviceResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateNasDeviceResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateNasDeviceResponse;
+    static deserializeBinaryFromReader(message: UpdateNasDeviceResponse, reader: jspb.BinaryReader): UpdateNasDeviceResponse;
+}
+
+export namespace UpdateNasDeviceResponse {
+    export type AsObject = {
+        nasDevicesList: Array<Nas.AsObject>,
+    }
+}
